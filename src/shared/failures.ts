@@ -15,10 +15,32 @@
 import { errorMessage, errorName, isDeadSession } from "./errors.ts";
 import type { MessageKey } from "./i18n.ts";
 
+/**
+ * A refusal the code decided on, as opposed to something that went wrong.
+ *
+ * It carries the locale key rather than a rendered string. Throwing `t(key)` and
+ * pattern-matching the text back out only works in the locale the patterns were
+ * written in — the message would survive in English and collapse to the generic
+ * line in German and Russian.
+ */
+export class PresentableError extends Error {
+  readonly key: MessageKey;
+  readonly substitutions?: string[];
+
+  constructor(key: MessageKey, substitutions?: string[]) {
+    super(key);
+    this.name = "PresentableError";
+    this.key = key;
+    this.substitutions = substitutions;
+  }
+}
+
 const TOO_LONG = /too (large|long)|input .*(exceeds|limit)|token limit/i;
 const UNSUPPORTED = /not (yet )?(supported|available)|no .*(model|pack)/i;
 
 export function failureKey(error: unknown): MessageKey {
+  if (error instanceof PresentableError) return error.key;
+
   const name = errorName(error);
   const message = errorMessage(error);
 
@@ -33,4 +55,9 @@ export function failureKey(error: unknown): MessageKey {
     return "errUnavailable";
 
   return "errGeneric";
+}
+
+/** The substitutions that go with `failureKey`, when the key takes any. */
+export function failureSubstitutions(error: unknown): string[] | undefined {
+  return error instanceof PresentableError ? error.substitutions : undefined;
 }

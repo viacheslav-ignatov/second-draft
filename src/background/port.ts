@@ -17,7 +17,7 @@ import {
 } from "../shared/messages.ts";
 import { cleanOutput, presetApplies } from "../shared/rules.ts";
 import { isAbortError } from "../shared/errors.ts";
-import { failureKey } from "../shared/failures.ts";
+import { failureKey, failureSubstitutions } from "../shared/failures.ts";
 import { detectLanguage } from "./ai/detect.ts";
 import { execute, warmUp } from "./ai/executors.ts";
 import { tooLongForAnyExecutor } from "./ai/limits.ts";
@@ -162,6 +162,9 @@ async function runGeneration(
     // The real error goes to the console, where a bug report can quote it; the
     // panel gets a sentence in the user's language.
     console.error("[second-draft]", error);
-    post({ type: "error", text: t(failureKey(error)) });
+    post({
+      type: "error",
+      text: t(failureKey(error), failureSubstitutions(error)),
+    });
   }
 }

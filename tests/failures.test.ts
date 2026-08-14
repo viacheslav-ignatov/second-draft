@@ -9,7 +9,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { failureKey } from "../src/shared/failures.ts";
+import {
+  PresentableError,
+  failureKey,
+  failureSubstitutions,
+} from "../src/shared/failures.ts";
 
 /** Builds the shape the built-in AI APIs actually throw. */
 const thrown = (name: string, message: string) => {
@@ -56,6 +60,26 @@ test("anything unrecognised falls back to the generic line", () => {
   assert.equal(failureKey(new Error("")), "errGeneric");
   assert.equal(failureKey("a bare string"), "errGeneric");
   assert.equal(failureKey(undefined), "errGeneric");
+});
+
+test("a deliberate refusal keeps its own key in every locale", () => {
+  // The executors refuse in three places. Rendering the string at the throw and
+  // matching it back out only works in the locale the patterns were written in,
+  // so the key travels with the error instead.
+  for (const key of [
+    "errUnknownLanguage",
+    "errAlreadyEnglish",
+    "errNoPack",
+    "errTooLong",
+  ] as const) {
+    assert.equal(failureKey(new PresentableError(key)), key);
+  }
+});
+
+test("a refusal carries its substitutions", () => {
+  const error = new PresentableError("errNoPack", ["German"]);
+  assert.deepEqual(failureSubstitutions(error), ["German"]);
+  assert.equal(failureSubstitutions(new Error("plain")), undefined);
 });
 
 test("classification never returns the raw message", () => {

@@ -8,6 +8,7 @@
  */
 
 import { t } from "../../shared/i18n.ts";
+import { PresentableError } from "../../shared/failures.ts";
 import { baseLanguage } from "../../shared/rules.ts";
 import type { DetectedLanguage } from "../../shared/messages.ts";
 import type { Preset } from "../presets.ts";
@@ -61,13 +62,13 @@ const viaTranslator: Route = async ({
 
   const source = baseLanguage(language?.code);
   const target = preset.translator.targetLanguage;
-  if (!source) throw new Error(t("errUnknownLanguage"));
-  if (source === target) throw new Error(t("errAlreadyEnglish"));
+  if (!source) throw new PresentableError("errUnknownLanguage");
+  if (source === target) throw new PresentableError("errAlreadyEnglish");
 
   const config = { sourceLanguage: source, targetLanguage: target };
   const state = await availabilityOf(api, config);
   if (!isSupported(state))
-    throw new Error(t("errNoPack", [language?.name ?? source]));
+    throw new PresentableError("errNoPack", [language?.name ?? source]);
 
   const first = state === "downloadable";
   if (first) post({ type: "status", text: t("statusFirstPack") });
@@ -236,7 +237,8 @@ const viaPrompt: Route = async ({ preset, text, post, signal }) => {
     PROMPT_KEY,
     promptFactory(api, post, first),
     async (base) => {
-      if (await exceedsQuota(base, input)) throw new Error(t("errTooLong"));
+      if (await exceedsQuota(base, input))
+        throw new PresentableError("errTooLong");
       const session =
         typeof base.clone === "function" ? await base.clone() : base;
       try {
