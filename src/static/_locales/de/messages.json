@@ -170,6 +170,12 @@
   "errUnavailable": {
     "message": "Die integrierte KI ist hier nicht verfügbar. Über das Symbol in der Leiste prüfen, was fehlt."
   },
+  "errModelGone": {
+    "message": "Chrome hat das Modell mittendrin entladen. Erneut versuchen."
+  },
+  "errGeneric": {
+    "message": "Dieser Durchlauf ist fehlgeschlagen. Erneut versuchen — bleibt es dabei, stehen die Details in der Konsole."
+  },
   "errNoInsert": {
     "message": "In dieses Feld lässt sich nicht schreiben. Kopiere den Text stattdessen."
   },

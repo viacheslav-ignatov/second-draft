@@ -143,5 +143,12 @@ export function summarize(presets: Record<string, Preset>): PresetSummary[] {
     label: preset.label,
     englishOnly: Boolean(preset.englishOnly),
     nonEnglishOnly: Boolean(preset.nonEnglishOnly),
+    // A gate can hide the preset, and `detected` asks the proofreader to work
+    // in whatever the user turns out to be writing. Everything else is
+    // language-agnostic and need not wait.
+    needsLanguage:
+      preset.englishOnly === true ||
+      preset.nonEnglishOnly === true ||
+      preset.proofread?.language === "detected",
   }));
 }

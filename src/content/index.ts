@@ -170,6 +170,7 @@ function main(): void {
       return;
     }
 
+    const text = target.text;
     current = presetId;
     panel.open();
     panel.setSelected(presetId);
@@ -177,31 +178,44 @@ function main(): void {
     renderChips();
 
     panel.setOriginal(
-      target.text,
+      text,
       t(target.wholeField ? "srcWholeField" : "srcSelection"),
     );
     panel.setDraft("");
     panel.setBusy(true);
-    panel.setStatus(t("statusCheckingLanguage"));
-
-    await client.detect(target.text);
-    renderLanguage();
-    renderChips();
 
     const preset = presets.find((p) => p.id === presetId);
-    if (preset && !chipEnabled(preset)) {
-      panel.setBusy(false);
-      panel.setStatus(
-        preset.englishOnly
-          ? t("errEnglishOnlyHint", [client.detectedLanguage?.name ?? ""])
-          : t("errAlreadyEnglish"),
-        true,
-      );
-      return;
+
+    // Only three of the nine built-ins care what language this is. For the rest
+    // the detection is worth having — it fills the language line and greys out
+    // the chips that do not apply — but it is not worth up to DETECT_TIMEOUT_MS
+    // of a blank panel, so it runs alongside the generation instead of ahead of
+    // it.
+    if (preset?.needsLanguage) {
+      panel.setStatus(t("statusCheckingLanguage"));
+      await client.detect(text);
+      renderLanguage();
+      renderChips();
+
+      if (!chipEnabled(preset)) {
+        panel.setBusy(false);
+        panel.setStatus(
+          preset.englishOnly
+            ? t("errEnglishOnlyHint", [client.detectedLanguage?.name ?? ""])
+            : t("errAlreadyEnglish"),
+          true,
+        );
+        return;
+      }
+    } else {
+      void client.detect(text).then(() => {
+        renderLanguage();
+        renderChips();
+      });
     }
 
     panel.setStatus(t("statusThinking"));
-    client.run(presetId, target.text);
+    client.run(presetId, text);
   }
 
   async function showPicker(): Promise<void> {

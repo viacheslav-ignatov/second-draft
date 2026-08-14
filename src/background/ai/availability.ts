@@ -7,8 +7,6 @@
  * never an exception.
  */
 
-import { errorMessage, errorName } from "../../shared/errors.ts";
-
 export type Availability =
   | "unavailable"
   | "downloadable"
@@ -61,9 +59,3 @@ export const needsDownload = (state: Availability): boolean =>
 /** Reachable at all, whether or not the asset still has to be fetched. */
 export const isSupported = (state: Availability): boolean =>
   isUsable(state) || needsDownload(state);
-
-export const isAbortError = (error: unknown): boolean =>
-  errorName(error) === "AbortError" || /abort/i.test(errorMessage(error));
-
-export const isDeadSession = (error: unknown): boolean =>
-  /destroyed|invalidated|detached|no longer valid/i.test(errorMessage(error));

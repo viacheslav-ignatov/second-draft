@@ -22,6 +22,13 @@ export interface PresetSummary {
   label: string;
   englishOnly: boolean;
   nonEnglishOnly: boolean;
+  /**
+   * Whether the result depends on the detected language — because a gate hides
+   * the preset, or because the executor proofreads in whatever the user turns
+   * out to be writing. The panel waits for detection only for these; for the
+   * rest, waiting would delay the first token for an answer nobody reads.
+   */
+  needsLanguage: boolean;
 }
 
 /** Whether the on-device model can run, and if not, why not. */

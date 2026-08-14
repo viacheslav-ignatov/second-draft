@@ -170,6 +170,12 @@
   "errUnavailable": {
     "message": "Built-in AI isn't available here. Open the toolbar icon to check what's missing."
   },
+  "errModelGone": {
+    "message": "Chrome unloaded the model part-way through. Press Retry."
+  },
+  "errGeneric": {
+    "message": "That run failed. Press Retry — if it keeps failing, the details are in the console."
+  },
   "errNoInsert": {
     "message": "Couldn't write into that field. Copy it instead."
   },

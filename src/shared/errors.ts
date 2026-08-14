@@ -18,3 +18,9 @@ export function errorMessage(error: unknown): string {
 export function errorName(error: unknown): string {
   return error instanceof Error ? error.name : "";
 }
+
+export const isAbortError = (error: unknown): boolean =>
+  errorName(error) === "AbortError" || /abort/i.test(errorMessage(error));
+
+export const isDeadSession = (error: unknown): boolean =>
+  /destroyed|invalidated|detached|no longer valid/i.test(errorMessage(error));

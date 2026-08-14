@@ -11,6 +11,8 @@ export type MessageKey =
   | "errEnglishOnly"
   | "errEnglishOnlyHint"
   | "errFieldChanged"
+  | "errGeneric"
+  | "errModelGone"
   | "errNoInsert"
   | "errNoPack"
   | "errNothing"
@@ -99,6 +101,8 @@ export const MESSAGE_KEYS: readonly MessageKey[] = [
   "errEnglishOnly",
   "errEnglishOnlyHint",
   "errFieldChanged",
+  "errGeneric",
+  "errModelGone",
   "errNoInsert",
   "errNoPack",
   "errNothing",

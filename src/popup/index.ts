@@ -6,7 +6,7 @@
  * fetch the model. A click in an extension page can.
  */
 
-import { errorMessage } from "../shared/errors.ts";
+import { failureKey } from "../shared/failures.ts";
 import { localizeDocument, t } from "../shared/i18n.ts";
 import type { ModelState, StateResponse } from "../shared/messages.ts";
 
@@ -88,7 +88,7 @@ $("download").addEventListener("click", () => {
       paint("ready");
     } catch (error) {
       console.error("[second-draft]", error);
-      $("detail").textContent = errorMessage(error);
+      $("detail").textContent = t(failureKey(error));
       button.disabled = false;
     }
   })();

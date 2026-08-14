@@ -8,7 +8,7 @@
 
 import { t } from "../../shared/i18n.ts";
 import type { ChunkReply, StatusReply } from "../../shared/messages.ts";
-import { isAbortError, isDeadSession } from "./availability.ts";
+import { isAbortError, isDeadSession } from "../../shared/errors.ts";
 
 /** How the executors report progress back to the panel. */
 export type Post = (
