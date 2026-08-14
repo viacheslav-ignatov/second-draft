@@ -5,7 +5,7 @@
  *
  * The system `zip` is used rather than a dependency: macOS, Linux and the CI
  * runner all have it, and a hand-rolled ZIP writer is a lot of format code
- * standing between a release and the store. Windows does not — see PUBLISHING.md.
+ * standing between a release and the store. Windows does not — see CONTRIBUTING.md.
  */
 
 import { execFileSync } from "node:child_process";
@@ -29,7 +29,7 @@ try {
   if (error.code === "ENOENT") {
     console.error(
       "  ✗ `zip` is not on PATH. Install it, build in WSL, or take the zip\n" +
-        "    from the release workflow — see PUBLISHING.md.",
+        "    from the release workflow — see CONTRIBUTING.md.",
     );
     process.exit(1);
   }

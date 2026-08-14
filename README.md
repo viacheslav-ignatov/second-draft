@@ -25,8 +25,8 @@ original in an editable box and goes into the field only when you press Insert.
 
 <!--
   The screenshot goes here. Uncomment once docs/screenshots/panel.png exists —
-  see PUBLISHING.md for the shot list. Left commented rather than embedded,
-  because a broken image is worse than no image.
+  see docs/screenshots/README.md for the shot list. Left commented rather than
+  embedded, because a broken image is worse than no image.
 
   ![The panel rewriting a review comment](docs/screenshots/panel.png)
 -->
@@ -79,7 +79,8 @@ honest too; see [SECURITY.md](SECURITY.md) for where each guarantee comes from.
 | `scripting`    | Injects the panel into that one tab                           |
 | `storage`      | Your own presets, synced by Chrome across your profile        |
 
-See [PRIVACY.md](PRIVACY.md) for the full policy.
+[PRIVACY.md](PRIVACY.md) summarises what that means in practice; the full
+policy is [docs/privacy-policy.html](docs/privacy-policy.html).
 
 ## What it does
 

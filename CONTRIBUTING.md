@@ -92,6 +92,22 @@ or `port.ts`, add a case: those two files are where every shipped regression has
 come from so far. Write the case so it fails against the code you are about to
 change, then fix it — a test that passes on the bug is documentation.
 
+## Releasing
+
+`npm run package` builds, runs the checks, and zips `dist/` with `manifest.json`
+at the archive root, which is the shape the Chrome Web Store wants. It shells out
+to the system `zip` — macOS, Linux and the CI runner have it, Windows does not,
+so on Windows build in WSL or take the archive from the release workflow instead.
+
+The version in `src/static/manifest.json` and in `package.json` must match;
+`npm run check` fails if they drift, because the store rejects a re-upload of a
+version it has already seen.
+
+Pushing a `v*` tag runs `.github/workflows/release.yml`, which refuses the build
+unless the tag matches the manifest version, then attaches the zip to the GitHub
+release. That archive is built from a clean checkout, so it is the one worth
+uploading.
+
 ## Reporting a bug
 
 Include your Chrome version, your OS, and what `chrome://on-device-internals`

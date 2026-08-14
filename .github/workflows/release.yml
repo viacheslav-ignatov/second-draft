@@ -18,9 +18,8 @@ jobs:
           node-version: "22"
           cache: npm
 
-      # PUBLISHING.md promises the build refuses when the tag and the manifest
-      # disagree. Checked first, so a mislabelled tag costs seconds rather than
-      # a rejected store upload.
+      # Checked before anything else, so a mislabelled tag costs seconds rather
+      # than a rejected store upload.
       - name: Tag matches the manifest version
         run: |
           tag="${GITHUB_REF_NAME#v}"
