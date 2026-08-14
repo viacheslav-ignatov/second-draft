@@ -15,12 +15,34 @@ interface DetectorApi {
   ): Promise<{ detect(text: string): Promise<DetectionResult[]> }>;
 }
 
+/**
+ * Built once and kept.
+ *
+ * Constructing an `Intl` formatter is the most expensive thing in this file, and
+ * detection runs on every invocation — while the browser's UI language cannot
+ * change under a service worker that is already awake. `null` means the runtime
+ * refused the locale, which it will go on refusing, so that answer is cached too
+ * rather than retried on every detection.
+ */
+let names: Intl.DisplayNames | null | undefined;
+
+function displayNames(): Intl.DisplayNames | null {
+  if (names === undefined) {
+    try {
+      names = new Intl.DisplayNames([chrome.i18n.getUILanguage()], {
+        type: "language",
+      });
+    } catch {
+      names = null;
+    }
+  }
+  return names;
+}
+
 function displayName(code: string): string | null {
   try {
-    const names = new Intl.DisplayNames([chrome.i18n.getUILanguage()], {
-      type: "language",
-    });
-    return names.of(code) ?? code;
+    // `of()` throws on a structurally invalid tag, which a detector can return.
+    return displayNames()?.of(code) ?? code;
   } catch {
     return code;
   }
