@@ -24,13 +24,16 @@ npm install
 npm run dev     # esbuild watch, then load dist/ unpacked
 npm run check   # what CI runs
 npm run format  # fixes most lint and formatting complaints
-
-git config core.hooksPath .githooks   # optional: run the checks before commit
 ```
 
-`npm run check` is build, typecheck, lint, generated-type freshness, manifest
-invariants, i18n completeness, bundle budget and tests. All of it runs in CI on
-every PR.
+`npm install` installs a pre-commit hook that runs `npm run check`. Delete
+`.git/hooks/pre-commit` to opt out; `scripts/install-hooks.mjs` never overwrites
+a hook you already have.
+
+`npm run check` is typecheck, lint, formatting, generated-type freshness,
+manifest invariants, i18n completeness and tests. CI runs the same thing on every
+PR, with `npm run build` before it and the bundle budget after — the manifest
+check inspects the built output, and the budget needs something to measure.
 
 Message keys are typed: `t("someKey")` only compiles if the key exists in
 `src/static/_locales/en/messages.json`. After adding or renaming one, run

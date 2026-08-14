@@ -23,9 +23,13 @@ is unnecessary.
 Second Draft never overwrites what you wrote. The rewrite appears next to the
 original in an editable box and goes into the field only when you press Insert.
 
-<!-- Replace with a real capture; see PUBLISHING.md for the shot list. -->
+<!--
+  The screenshot goes here. Uncomment once docs/screenshots/panel.png exists —
+  see PUBLISHING.md for the shot list. Left commented rather than embedded,
+  because a broken image is worse than no image.
 
-![The panel rewriting a review comment](docs/screenshots/panel.png)
+  ![The panel rewriting a review comment](docs/screenshots/panel.png)
+-->
 
 ## Install
 

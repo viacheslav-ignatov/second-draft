@@ -1,0 +1,22 @@
+version: 2
+
+updates:
+  # Everything here is a devDependency — nothing ships in the extension — so the
+  # risk is to the build, not to users. Grouped into one PR a week rather than
+  # five, because a stream of single-bump PRs stops being read.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      dev-dependencies:
+        patterns: ["*"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]

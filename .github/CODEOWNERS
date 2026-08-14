@@ -1,0 +1,12 @@
+# Every change gets a review request. The interesting files are listed
+# separately not because they are more valuable, but because a mistake in them
+# is invisible in a diff: they are what make the privacy claims true.
+
+* @viacheslav-ignatov
+
+/src/static/manifest.json  @viacheslav-ignatov
+/scripts/check-manifest.mjs @viacheslav-ignatov
+/eslint.config.mjs         @viacheslav-ignatov
+/.github/                  @viacheslav-ignatov
+/PRIVACY.md                @viacheslav-ignatov
+/SECURITY.md               @viacheslav-ignatov
