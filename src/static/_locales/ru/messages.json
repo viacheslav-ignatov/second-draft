@@ -1,0 +1,310 @@
+{
+  "extName": {
+    "message": "Second Draft"
+  },
+  "extDescription": {
+    "message": "Предлагает второй вариант того, что вы написали, с помощью встроенной в Chrome локальной модели. Ничего не покидает компьютер."
+  },
+  "cmdOpenPicker": {
+    "message": "Предложить вариант для активного поля"
+  },
+  "menuRoot": {
+    "message": "Second Draft"
+  },
+  "presetSoften": {
+    "message": "Мягче, смысл тот же"
+  },
+  "presetQuestion": {
+    "message": "Переписать как вопрос"
+  },
+  "presetShorter": {
+    "message": "Вдвое короче"
+  },
+  "presetHedging": {
+    "message": "Убрать смягчения"
+  },
+  "presetBullets": {
+    "message": "Списком"
+  },
+  "presetCasual": {
+    "message": "Проще и живее"
+  },
+  "presetTypos": {
+    "message": "Только опечатки"
+  },
+  "presetTranslate": {
+    "message": "Перевести на английский"
+  },
+  "presetEnglish": {
+    "message": "Только исправить английский"
+  },
+  "assetModel": {
+    "message": "модель"
+  },
+  "assetLanguagePack": {
+    "message": "языковой пакет"
+  },
+  "assetTranslationPack": {
+    "message": "пакет перевода"
+  },
+  "statusPickPreset": {
+    "message": "Выберите вариант выше."
+  },
+  "statusCheckingLanguage": {
+    "message": "Определяю язык…"
+  },
+  "statusThinking": {
+    "message": "Думаю…"
+  },
+  "statusWriting": {
+    "message": "Пишу…"
+  },
+  "statusReady": {
+    "message": "Готово. Выберите вариант выше."
+  },
+  "statusNeedsDownload": {
+    "message": "Модели пока нет на этом компьютере. Скачайте её через значок на панели."
+  },
+  "statusReloading": {
+    "message": "Перезагружаю модель…"
+  },
+  "statusFirstModel": {
+    "message": "Скачиваю модель, это происходит один раз…"
+  },
+  "statusFirstPack": {
+    "message": "Скачиваю пакет перевода, это происходит один раз…"
+  },
+  "statusCopied": {
+    "message": "Скопировано."
+  },
+  "statusInsertedNoUndo": {
+    "message": "Вставлено. Это поле не поддерживает отмену — Cmd+Z не вернёт оригинал."
+  },
+  "statusDownloading": {
+    "message": "Скачиваю: $ASSET$…",
+    "placeholders": {
+      "asset": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusDownloadingPct": {
+    "message": "Скачиваю: $ASSET$… $PCT$ %",
+    "placeholders": {
+      "asset": {
+        "content": "$1"
+      },
+      "pct": {
+        "content": "$2"
+      }
+    }
+  },
+  "statusLoading": {
+    "message": "Загружаю: $ASSET$…",
+    "placeholders": {
+      "asset": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusLoadingPct": {
+    "message": "Загружаю: $ASSET$… $PCT$ %",
+    "placeholders": {
+      "asset": {
+        "content": "$1"
+      },
+      "pct": {
+        "content": "$2"
+      }
+    }
+  },
+  "statusDone": {
+    "message": "$LABEL$ — поправьте при необходимости и нажмите «Вставить».",
+    "placeholders": {
+      "label": {
+        "content": "$1"
+      }
+    }
+  },
+  "langDetected": {
+    "message": "Язык: $LANG$",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "srcWholeField": {
+    "message": "Всё поле"
+  },
+  "srcSelection": {
+    "message": "Выделение"
+  },
+  "panelClose": {
+    "message": "Закрыть (Esc)"
+  },
+  "panelDraftLabel": {
+    "message": "Переписанный текст"
+  },
+  "panelInsert": {
+    "message": "Вставить"
+  },
+  "panelCopy": {
+    "message": "Копировать"
+  },
+  "panelRetry": {
+    "message": "Ещё раз"
+  },
+  "panelHint": {
+    "message": "Работает локально. Ничего не покидает компьютер. Cmd+Z отменяет вставку."
+  },
+  "errNothing": {
+    "message": "Нечего переписывать."
+  },
+  "errUnknownPreset": {
+    "message": "Неизвестный вариант."
+  },
+  "errTooLong": {
+    "message": "Слишком длинно для локальной модели. Выделите кусок поменьше."
+  },
+  "errUnavailable": {
+    "message": "Встроенная модель здесь недоступна. Откройте значок на панели, чтобы понять, чего не хватает."
+  },
+  "errNoInsert": {
+    "message": "В это поле записать не удалось. Скопируйте текст вручную."
+  },
+  "errClipboard": {
+    "message": "Страница заблокировала буфер обмена. Текст выделен — нажмите Cmd/Ctrl+C."
+  },
+  "errUnknownLanguage": {
+    "message": "Не удалось определить язык."
+  },
+  "errAlreadyEnglish": {
+    "message": "Этот текст и так на английском."
+  },
+  "errNoPack": {
+    "message": "У Chrome нет пакета перевода с языка «$LANG$» на английский.",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "errEnglishOnly": {
+    "message": "Применимо только к английскому. Здесь похоже на $LANG$.",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "errEnglishOnlyHint": {
+    "message": "Этот вариант только для английского, а текст похож на $LANG$. Попробуйте «Перевести на английский».",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "Локальная модель"
+  },
+  "popupStateReady": {
+    "message": "Готова"
+  },
+  "popupReadyDetail": {
+    "message": "Всё считается локально. Текст никуда не уходит."
+  },
+  "popupStateDownloading": {
+    "message": "Скачивается"
+  },
+  "popupDownloadingDetail": {
+    "message": "Chrome качает модель. Это окно можно закрыть."
+  },
+  "popupStateDownloadable": {
+    "message": "Ещё не скачана"
+  },
+  "popupDownloadableDetail": {
+    "message": "Chrome может запустить модель на этом компьютере, но сначала её нужно скачать. Несколько гигабайт, один раз."
+  },
+  "popupDownload": {
+    "message": "Скачать модель"
+  },
+  "popupProgress": {
+    "message": "Скачиваю… $PCT$ %",
+    "placeholders": {
+      "pct": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupStateUnavailable": {
+    "message": "Недоступна"
+  },
+  "popupUnavailableDetail": {
+    "message": "Эта сборка Chrome или это железо не тянут локальную модель. Нужен Chrome 138+ на десктопе, примерно 22 ГБ свободного места и поддерживаемая видеокарта."
+  },
+  "popupShortcutPrefix": {
+    "message": "Открыть панель:"
+  },
+  "popupNoShortcut": {
+    "message": "не назначено"
+  },
+  "popupOptions": {
+    "message": "Свои варианты"
+  },
+  "popupInternals": {
+    "message": "Диагностика модели"
+  },
+  "optTitle": {
+    "message": "Свои варианты"
+  },
+  "optSub": {
+    "message": "Добавленные здесь варианты появятся рядом со встроенными — в панели и в контекстном меню. Название плюс инструкция модели."
+  },
+  "optEmpty": {
+    "message": "Своих вариантов пока нет."
+  },
+  "optAdd": {
+    "message": "Добавить вариант"
+  },
+  "optSave": {
+    "message": "Сохранить"
+  },
+  "optSaved": {
+    "message": "Сохранено"
+  },
+  "optSaveFailed": {
+    "message": "Не удалось сохранить — Chrome отклонил запись. Попробуйте сократить инструкции или удалить лишние варианты."
+  },
+  "optDelete": {
+    "message": "Удалить"
+  },
+  "optLabelPlaceholder": {
+    "message": "Название, например «Тон компании»"
+  },
+  "optInstructionPlaceholder": {
+    "message": "Инструкция модели, например: «Перепиши простым и прямым языком. Без превосходных степеней и восклицательных знаков. Верни только переписанный текст.»"
+  },
+  "optEnglishOnly": {
+    "message": "Предлагать только для английского текста"
+  },
+  "welcomeTitle": {
+    "message": "Second Draft установлен"
+  },
+  "welcomeSub": {
+    "message": "Переписывает то, что вы написали, прямо на компьютере — и никогда не заменяет текст без спроса."
+  },
+  "welcomeStep1": {
+    "message": "Кликните в любое текстовое поле на любом сайте и напишите что-нибудь."
+  },
+  "welcomeStep2": {
+    "message": "Нажмите сочетание клавиш или кликните по полю правой кнопкой и выберите Second Draft."
+  },
+  "welcomeStep3": {
+    "message": "Выберите вариант, поправьте при желании и нажмите «Вставить». Cmd/Ctrl+Z вернёт оригинал."
+  },
+  "welcomeNote": {
+    "message": "При первом запуске Chrome скачивает локальную модель — несколько гигабайт, это займёт время. Запустите загрузку через значок на панели и следите за прогрессом. Ничего из написанного никуда не отправляется."
+  }
+}

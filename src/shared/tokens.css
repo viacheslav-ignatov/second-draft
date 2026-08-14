@@ -1,0 +1,50 @@
+/**
+ * Design tokens.
+ *
+ * Linked by the extension pages and inlined into the panel's shadow root, so the
+ * palette is defined once. `:host` is what applies inside the shadow root;
+ * `:root` is what applies on a page. Values follow GitHub's Primer scale, since
+ * the panel spends most of its life on top of GitHub.
+ */
+
+:root,
+:host {
+  color-scheme: light dark;
+
+  --sd-bg: #fff;
+  --sd-bg-subtle: #f6f8fa;
+  --sd-fg: #1f2328;
+  --sd-fg-muted: #59636e;
+  --sd-border: #d1d9e0;
+  --sd-accent: #0969da;
+  --sd-accent-fg: #fff;
+  --sd-accent-bg: #ddf4ff;
+  --sd-accent-border: #54aeff66;
+  --sd-success: #1f883d;
+  --sd-danger: #cf222e;
+  --sd-warning: #bf8700;
+  --sd-button-bg: #f6f8fa;
+  --sd-button-border: rgb(31 35 40 / 15%);
+  --sd-shadow: 0 8px 24px rgb(31 35 40 / 20%);
+  --sd-radius: 6px;
+  --sd-radius-lg: 8px;
+  --sd-font: -apple-system, blinkmacsystemfont, "Segoe UI", helvetica, arial, sans-serif;
+  --sd-font-mono: ui-monospace, sfmono-regular, menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root,
+  :host {
+    --sd-bg: #0d1117;
+    --sd-bg-subtle: #161b22;
+    --sd-fg: #e6edf3;
+    --sd-fg-muted: #8d96a0;
+    --sd-border: #30363d;
+    --sd-accent: #4493f8;
+    --sd-accent-bg: #121d2f;
+    --sd-accent-border: #1f6feb66;
+    --sd-success: #238636;
+    --sd-button-bg: #21262d;
+    --sd-button-border: #3d444d;
+  }
+}

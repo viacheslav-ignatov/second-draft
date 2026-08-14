@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Second Draft — on-device rewriting for Chrome</title>
+    <meta
+      name="description"
+      content="A Chrome extension that rewrites what you typed using Chrome's built-in on-device model. No servers, no API keys, no network requests."
+    />
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 64px 20px 96px;
+        font:
+          16px/1.7 -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Helvetica,
+          Arial,
+          sans-serif;
+        background: #fff;
+        color: #1f2328;
+      }
+      img.logo {
+        width: 72px;
+        height: 72px;
+      }
+      h1 {
+        font-size: 30px;
+        margin: 20px 0 6px;
+        letter-spacing: -0.02em;
+      }
+      .tagline {
+        font-size: 18px;
+        color: #59636e;
+        margin: 0 0 32px;
+      }
+      h2 {
+        font-size: 18px;
+        margin: 36px 0 8px;
+      }
+      a {
+        color: #0969da;
+      }
+      .cta {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 28px 0 8px;
+      }
+      .cta a {
+        display: inline-block;
+        padding: 10px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .cta a.primary {
+        background: #1f883d;
+        color: #fff;
+      }
+      .cta a.ghost {
+        border: 1px solid #d1d9e0;
+        color: inherit;
+      }
+      .req {
+        font-size: 14px;
+        color: #59636e;
+      }
+      ul {
+        padding-left: 20px;
+      }
+      li {
+        margin-bottom: 6px;
+      }
+      footer {
+        margin-top: 48px;
+        font-size: 14px;
+        color: #59636e;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: #0d1117;
+          color: #e6edf3;
+        }
+        .tagline,
+        .req,
+        footer {
+          color: #8d96a0;
+        }
+        .cta a.ghost {
+          border-color: #30363d;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <img class="logo" src="icon-128.png" alt="" />
+    <h1>Second Draft</h1>
+    <p class="tagline">
+      Rewrites what you just typed — softer, shorter, or as a question — using Chrome's built-in
+      on-device model. Nothing leaves your machine.
+    </p>
+
+    <div class="cta">
+      <a class="primary" href="#">Chrome Web Store</a>
+      <a class="ghost" href="https://github.com/USERNAME/second-draft">Source on GitHub</a>
+    </div>
+    <p class="req">
+      Free and open source. Requires Chrome 138+ on desktop, ~22&nbsp;GB free disk and a supported
+      GPU; the model downloads once.
+    </p>
+
+    <h2>Why it is different</h2>
+    <p>
+      Every other writing assistant sends what you type to somebody's API. This one cannot: it
+      declares no host permissions, so Chrome would block a network request even if the code
+      attempted one. That makes it usable on the text you would never paste into a web tool — review
+      comments, internal drafts, anything under an NDA.
+    </p>
+
+    <h2>What it does</h2>
+    <ul>
+      <li>Softens a blunt comment without weakening the claim</li>
+      <li>Turns a statement into a genuine question</li>
+      <li>Halves the length, keeping the technical detail</li>
+      <li>Fixes only the English, leaving your tone alone</li>
+      <li>Translates to English when the text is not English</li>
+      <li>Runs your own presets, stored on your machine</li>
+    </ul>
+    <p>
+      It never overwrites what you wrote: the draft appears next to the original and goes into the
+      field only when you press Insert. Cmd+Z brings back your words.
+    </p>
+
+    <h2>Honest limitations</h2>
+    <p>
+      The on-device model is small. It is good at grammar and tone, mediocre at anything needing
+      judgement, and confidently wrong if you ask it about code. The hardware requirements will
+      exclude some laptops entirely — the extension tells you so instead of failing silently.
+    </p>
+
+    <footer>
+      <a href="privacy-policy.html">Privacy policy</a> ·
+      <a href="https://github.com/USERNAME/second-draft/issues">Support</a> · MIT licence
+    </footer>
+  </body>
+</html>

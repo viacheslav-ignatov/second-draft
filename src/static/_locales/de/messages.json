@@ -1,0 +1,310 @@
+{
+  "extName": {
+    "message": "Second Draft"
+  },
+  "extDescription": {
+    "message": "Schlägt eine zweite Fassung deines Textes vor – mit Chromes integrierter KI direkt auf dem Gerät. Nichts verlässt den Rechner."
+  },
+  "cmdOpenPicker": {
+    "message": "Alternative für das aktive Feld entwerfen"
+  },
+  "menuRoot": {
+    "message": "Second Draft"
+  },
+  "presetSoften": {
+    "message": "Freundlicher, gleicher Inhalt"
+  },
+  "presetQuestion": {
+    "message": "In eine Frage umformulieren"
+  },
+  "presetShorter": {
+    "message": "Halb so lang"
+  },
+  "presetHedging": {
+    "message": "Weniger Weichmacher"
+  },
+  "presetBullets": {
+    "message": "Als Stichpunkte"
+  },
+  "presetCasual": {
+    "message": "Lockerer"
+  },
+  "presetTypos": {
+    "message": "Nur Tippfehler korrigieren"
+  },
+  "presetTranslate": {
+    "message": "Ins Englische übersetzen"
+  },
+  "presetEnglish": {
+    "message": "Nur das Englisch korrigieren"
+  },
+  "assetModel": {
+    "message": "Modell"
+  },
+  "assetLanguagePack": {
+    "message": "Sprachpaket"
+  },
+  "assetTranslationPack": {
+    "message": "Übersetzungspaket"
+  },
+  "statusPickPreset": {
+    "message": "Wähle oben eine Variante."
+  },
+  "statusCheckingLanguage": {
+    "message": "Sprache wird erkannt…"
+  },
+  "statusThinking": {
+    "message": "Denkt nach…"
+  },
+  "statusWriting": {
+    "message": "Schreibt…"
+  },
+  "statusReady": {
+    "message": "Bereit. Wähle oben eine Variante."
+  },
+  "statusNeedsDownload": {
+    "message": "Das Modell liegt noch nicht auf diesem Rechner. Über das Symbol in der Leiste herunterladen."
+  },
+  "statusReloading": {
+    "message": "Modell wird neu geladen…"
+  },
+  "statusFirstModel": {
+    "message": "Das Modell wird geladen, das passiert nur einmal…"
+  },
+  "statusFirstPack": {
+    "message": "Das Übersetzungspaket wird geladen, das passiert nur einmal…"
+  },
+  "statusCopied": {
+    "message": "Kopiert."
+  },
+  "statusInsertedNoUndo": {
+    "message": "Eingefügt. Dieses Feld unterstützt kein Rückgängig – Cmd+Z holt dein Original nicht zurück."
+  },
+  "statusDownloading": {
+    "message": "$ASSET$ wird heruntergeladen…",
+    "placeholders": {
+      "asset": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusDownloadingPct": {
+    "message": "$ASSET$ wird heruntergeladen… $PCT$ %",
+    "placeholders": {
+      "asset": {
+        "content": "$1"
+      },
+      "pct": {
+        "content": "$2"
+      }
+    }
+  },
+  "statusLoading": {
+    "message": "$ASSET$ wird geladen…",
+    "placeholders": {
+      "asset": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusLoadingPct": {
+    "message": "$ASSET$ wird geladen… $PCT$ %",
+    "placeholders": {
+      "asset": {
+        "content": "$1"
+      },
+      "pct": {
+        "content": "$2"
+      }
+    }
+  },
+  "statusDone": {
+    "message": "$LABEL$ – bei Bedarf anpassen, dann Einfügen.",
+    "placeholders": {
+      "label": {
+        "content": "$1"
+      }
+    }
+  },
+  "langDetected": {
+    "message": "Erkannt: $LANG$",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "srcWholeField": {
+    "message": "Ganzes Feld"
+  },
+  "srcSelection": {
+    "message": "Auswahl"
+  },
+  "panelClose": {
+    "message": "Schließen (Esc)"
+  },
+  "panelDraftLabel": {
+    "message": "Umformulierter Text"
+  },
+  "panelInsert": {
+    "message": "Einfügen"
+  },
+  "panelCopy": {
+    "message": "Kopieren"
+  },
+  "panelRetry": {
+    "message": "Erneut"
+  },
+  "panelHint": {
+    "message": "Läuft lokal. Nichts verlässt diesen Rechner. Cmd+Z macht das Einfügen rückgängig."
+  },
+  "errNothing": {
+    "message": "Kein Text zum Umformulieren."
+  },
+  "errUnknownPreset": {
+    "message": "Unbekannte Variante."
+  },
+  "errTooLong": {
+    "message": "Das ist zu lang für das lokale Modell. Wähle einen kleineren Abschnitt aus."
+  },
+  "errUnavailable": {
+    "message": "Die integrierte KI ist hier nicht verfügbar. Über das Symbol in der Leiste prüfen, was fehlt."
+  },
+  "errNoInsert": {
+    "message": "In dieses Feld lässt sich nicht schreiben. Kopiere den Text stattdessen."
+  },
+  "errClipboard": {
+    "message": "Die Seite blockiert die Zwischenablage. Der Text ist markiert – Cmd/Strg+C drücken."
+  },
+  "errUnknownLanguage": {
+    "message": "Die Sprache lässt sich nicht bestimmen."
+  },
+  "errAlreadyEnglish": {
+    "message": "Der Text ist bereits Englisch."
+  },
+  "errNoPack": {
+    "message": "Chrome hat kein Übersetzungspaket von $LANG$ nach Englisch.",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "errEnglishOnly": {
+    "message": "Gilt nur für Englisch. Das hier sieht nach $LANG$ aus.",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "errEnglishOnlyHint": {
+    "message": "Diese Variante gilt nur für Englisch, der Text sieht nach $LANG$ aus. Versuch es mit „Ins Englische übersetzen“.",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "Lokales Modell"
+  },
+  "popupStateReady": {
+    "message": "Bereit"
+  },
+  "popupReadyDetail": {
+    "message": "Alles läuft lokal. Kein Text verlässt diesen Rechner."
+  },
+  "popupStateDownloading": {
+    "message": "Wird geladen"
+  },
+  "popupDownloadingDetail": {
+    "message": "Chrome lädt das Modell. Du kannst dieses Fenster schließen."
+  },
+  "popupStateDownloadable": {
+    "message": "Noch nicht geladen"
+  },
+  "popupDownloadableDetail": {
+    "message": "Chrome kann das Modell auf diesem Rechner ausführen, muss es aber erst laden. Einige Gigabyte, einmalig."
+  },
+  "popupDownload": {
+    "message": "Modell herunterladen"
+  },
+  "popupProgress": {
+    "message": "Wird geladen… $PCT$ %",
+    "placeholders": {
+      "pct": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupStateUnavailable": {
+    "message": "Nicht verfügbar"
+  },
+  "popupUnavailableDetail": {
+    "message": "Diese Chrome-Version oder diese Hardware kann das lokale Modell nicht ausführen. Nötig sind Chrome 138+ auf dem Desktop, rund 22 GB freier Speicher und eine unterstützte GPU."
+  },
+  "popupShortcutPrefix": {
+    "message": "Panel öffnen mit"
+  },
+  "popupNoShortcut": {
+    "message": "nicht belegt"
+  },
+  "popupOptions": {
+    "message": "Eigene Varianten"
+  },
+  "popupInternals": {
+    "message": "Modell-Diagnose"
+  },
+  "optTitle": {
+    "message": "Eigene Varianten"
+  },
+  "optSub": {
+    "message": "Hier angelegte Varianten erscheinen neben den mitgelieferten – im Panel und im Rechtsklick-Menü. Ein Name plus eine Anweisung an das Modell."
+  },
+  "optEmpty": {
+    "message": "Noch keine eigenen Varianten."
+  },
+  "optAdd": {
+    "message": "Variante hinzufügen"
+  },
+  "optSave": {
+    "message": "Speichern"
+  },
+  "optSaved": {
+    "message": "Gespeichert"
+  },
+  "optSaveFailed": {
+    "message": "Speichern fehlgeschlagen – Chrome hat die Daten abgelehnt. Versuche kürzere Anweisungen oder weniger Varianten."
+  },
+  "optDelete": {
+    "message": "Löschen"
+  },
+  "optLabelPlaceholder": {
+    "message": "Name, z. B. „Tonalität der Firma“"
+  },
+  "optInstructionPlaceholder": {
+    "message": "Anweisung an das Modell, z. B. „Formuliere den Text schlicht und direkt. Keine Superlative, keine Ausrufezeichen. Gib nur den umformulierten Text zurück.“"
+  },
+  "optEnglishOnly": {
+    "message": "Nur für englische Texte anbieten"
+  },
+  "welcomeTitle": {
+    "message": "Second Draft ist installiert"
+  },
+  "welcomeSub": {
+    "message": "Formuliert deinen Text neu – lokal, und ersetzt ihn nie ungefragt."
+  },
+  "welcomeStep1": {
+    "message": "Klick auf einer beliebigen Seite in ein Textfeld und schreib etwas."
+  },
+  "welcomeStep2": {
+    "message": "Drück das Tastenkürzel oder klick mit rechts ins Feld und wähle Second Draft."
+  },
+  "welcomeStep3": {
+    "message": "Variante wählen, bei Bedarf anpassen, dann Einfügen. Cmd/Strg+Z holt das Original zurück."
+  },
+  "welcomeNote": {
+    "message": "Beim ersten Mal lädt Chrome sein lokales Modell – einige Gigabyte, das dauert. Über das Symbol in der Leiste starten und den Fortschritt verfolgen. Nichts von dem, was du schreibst, wird irgendwohin gesendet."
+  }
+}

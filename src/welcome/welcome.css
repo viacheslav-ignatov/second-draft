@@ -1,0 +1,39 @@
+body {
+  max-width: 620px;
+  margin: 60px auto;
+  padding: 0 20px;
+  background: var(--sd-bg);
+  color: var(--sd-fg);
+  font: 15px/1.65 var(--sd-font);
+}
+
+img {
+  width: 64px;
+  height: 64px;
+}
+
+h1 {
+  margin: 16px 0 6px;
+  font-size: 24px;
+}
+
+.sub {
+  margin: 0 0 28px;
+  color: var(--sd-fg-muted);
+}
+
+ol {
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+.note {
+  margin-top: 28px;
+  padding-left: 12px;
+  border-left: 3px solid var(--sd-border);
+  color: var(--sd-fg-muted);
+  font-size: 14px;
+}

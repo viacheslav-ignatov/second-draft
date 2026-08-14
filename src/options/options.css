@@ -1,0 +1,109 @@
+body {
+  max-width: 640px;
+  margin: 40px auto;
+  padding: 0 20px;
+  background: var(--sd-bg);
+  color: var(--sd-fg);
+  font: 14px/1.6 var(--sd-font);
+}
+
+h1 {
+  margin: 0 0 4px;
+  font-size: 20px;
+}
+
+.sub {
+  margin: 0 0 24px;
+  color: var(--sd-fg-muted);
+}
+
+.preset {
+  margin-bottom: 12px;
+  padding: 12px;
+  border: 1px solid var(--sd-border);
+  border-radius: var(--sd-radius-lg);
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+input[type="text"],
+textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid var(--sd-border);
+  border-radius: var(--sd-radius);
+  background: var(--sd-bg);
+  color: inherit;
+  font: inherit;
+}
+
+textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
+.counter {
+  margin-top: 2px;
+  color: var(--sd-fg-muted);
+  font-size: 12px;
+  text-align: right;
+}
+
+label.check {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: var(--sd-fg-muted);
+  font-size: 13px;
+}
+
+button {
+  padding: 8px 12px;
+  border: 1px solid var(--sd-button-border);
+  border-radius: var(--sd-radius);
+  background: var(--sd-button-bg);
+  color: var(--sd-fg);
+  font: 600 13px/1 inherit;
+  cursor: pointer;
+}
+
+button.primary {
+  background: var(--sd-success);
+  color: #fff;
+}
+
+button.danger {
+  color: var(--sd-danger);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.flag {
+  color: var(--sd-success);
+  font-size: 13px;
+}
+
+.flag.error {
+  color: var(--sd-danger);
+}
+
+.empty {
+  color: var(--sd-fg-muted);
+  font-style: italic;
+}

@@ -1,0 +1,310 @@
+{
+  "extName": {
+    "message": "Second Draft"
+  },
+  "extDescription": {
+    "message": "Proposes a second draft of what you just typed, using Chrome's built-in on-device AI. Nothing leaves the machine."
+  },
+  "cmdOpenPicker": {
+    "message": "Draft an alternative for the focused field"
+  },
+  "menuRoot": {
+    "message": "Second Draft"
+  },
+  "presetSoften": {
+    "message": "Soften, keep the meaning"
+  },
+  "presetQuestion": {
+    "message": "Turn into a question"
+  },
+  "presetShorter": {
+    "message": "Half the length"
+  },
+  "presetHedging": {
+    "message": "Cut the hedging"
+  },
+  "presetBullets": {
+    "message": "As bullet points"
+  },
+  "presetCasual": {
+    "message": "Less formal"
+  },
+  "presetTypos": {
+    "message": "Fix typos only"
+  },
+  "presetTranslate": {
+    "message": "Translate to English"
+  },
+  "presetEnglish": {
+    "message": "Fix the English only"
+  },
+  "assetModel": {
+    "message": "model"
+  },
+  "assetLanguagePack": {
+    "message": "language pack"
+  },
+  "assetTranslationPack": {
+    "message": "translation pack"
+  },
+  "statusPickPreset": {
+    "message": "Pick a rewrite above."
+  },
+  "statusCheckingLanguage": {
+    "message": "Checking the language…"
+  },
+  "statusThinking": {
+    "message": "Thinking…"
+  },
+  "statusWriting": {
+    "message": "Writing…"
+  },
+  "statusReady": {
+    "message": "Ready. Pick a rewrite above."
+  },
+  "statusNeedsDownload": {
+    "message": "The model isn't on this machine yet. Open the toolbar icon to download it."
+  },
+  "statusReloading": {
+    "message": "Reloading the model…"
+  },
+  "statusFirstModel": {
+    "message": "Downloading the model, this happens once…"
+  },
+  "statusFirstPack": {
+    "message": "Downloading the translation pack, this happens once…"
+  },
+  "statusCopied": {
+    "message": "Copied."
+  },
+  "statusInsertedNoUndo": {
+    "message": "Inserted. This field doesn't support undo, so Cmd+Z won't bring back your original."
+  },
+  "statusDownloading": {
+    "message": "Downloading the $ASSET$…",
+    "placeholders": {
+      "asset": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusDownloadingPct": {
+    "message": "Downloading the $ASSET$… $PCT$%",
+    "placeholders": {
+      "asset": {
+        "content": "$1"
+      },
+      "pct": {
+        "content": "$2"
+      }
+    }
+  },
+  "statusLoading": {
+    "message": "Loading the $ASSET$…",
+    "placeholders": {
+      "asset": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusLoadingPct": {
+    "message": "Loading the $ASSET$… $PCT$%",
+    "placeholders": {
+      "asset": {
+        "content": "$1"
+      },
+      "pct": {
+        "content": "$2"
+      }
+    }
+  },
+  "statusDone": {
+    "message": "$LABEL$ — edit if needed, then Insert.",
+    "placeholders": {
+      "label": {
+        "content": "$1"
+      }
+    }
+  },
+  "langDetected": {
+    "message": "Detected: $LANG$",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "srcWholeField": {
+    "message": "Whole field"
+  },
+  "srcSelection": {
+    "message": "Selection"
+  },
+  "panelClose": {
+    "message": "Close (Esc)"
+  },
+  "panelDraftLabel": {
+    "message": "Rewritten text"
+  },
+  "panelInsert": {
+    "message": "Insert"
+  },
+  "panelCopy": {
+    "message": "Copy"
+  },
+  "panelRetry": {
+    "message": "Retry"
+  },
+  "panelHint": {
+    "message": "Runs on-device. Nothing leaves this machine. Cmd+Z undoes the insert."
+  },
+  "errNothing": {
+    "message": "Nothing to rewrite."
+  },
+  "errUnknownPreset": {
+    "message": "Unknown preset."
+  },
+  "errTooLong": {
+    "message": "That's too long for the on-device model. Select a smaller chunk."
+  },
+  "errUnavailable": {
+    "message": "Built-in AI isn't available here. Open the toolbar icon to check what's missing."
+  },
+  "errNoInsert": {
+    "message": "Couldn't write into that field. Copy it instead."
+  },
+  "errClipboard": {
+    "message": "The page blocked the clipboard. The text is selected — press Cmd/Ctrl+C."
+  },
+  "errUnknownLanguage": {
+    "message": "Couldn't tell which language that is."
+  },
+  "errAlreadyEnglish": {
+    "message": "That text already looks like English."
+  },
+  "errNoPack": {
+    "message": "Chrome has no $LANG$ to English translation pack available.",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "errEnglishOnly": {
+    "message": "Only applies to English. This looks like $LANG$.",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "errEnglishOnlyHint": {
+    "message": "That preset only applies to English, and this looks like $LANG$. Try Translate to English.",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "On-device model"
+  },
+  "popupStateReady": {
+    "message": "Ready"
+  },
+  "popupReadyDetail": {
+    "message": "Rewrites run locally. No text leaves this machine."
+  },
+  "popupStateDownloading": {
+    "message": "Downloading"
+  },
+  "popupDownloadingDetail": {
+    "message": "Chrome is fetching the model. You can close this popup."
+  },
+  "popupStateDownloadable": {
+    "message": "Not downloaded yet"
+  },
+  "popupDownloadableDetail": {
+    "message": "Chrome can run the model on this machine, but has to fetch it first. It is a few gigabytes and only happens once."
+  },
+  "popupDownload": {
+    "message": "Download the model"
+  },
+  "popupProgress": {
+    "message": "Downloading… $PCT$%",
+    "placeholders": {
+      "pct": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupStateUnavailable": {
+    "message": "Unavailable"
+  },
+  "popupUnavailableDetail": {
+    "message": "This Chrome build or this hardware can't run the on-device model. It needs Chrome 138+ on desktop, roughly 22 GB free disk and a supported GPU."
+  },
+  "popupShortcutPrefix": {
+    "message": "Open the panel with"
+  },
+  "popupNoShortcut": {
+    "message": "not set"
+  },
+  "popupOptions": {
+    "message": "Your rewrites"
+  },
+  "popupInternals": {
+    "message": "Model diagnostics"
+  },
+  "optTitle": {
+    "message": "Your rewrites"
+  },
+  "optSub": {
+    "message": "Presets you add here appear next to the built-in ones, in the panel and in the right-click menu. A label plus an instruction to the model."
+  },
+  "optEmpty": {
+    "message": "No rewrites of your own yet."
+  },
+  "optAdd": {
+    "message": "Add a rewrite"
+  },
+  "optSave": {
+    "message": "Save"
+  },
+  "optSaved": {
+    "message": "Saved"
+  },
+  "optSaveFailed": {
+    "message": "Could not save — Chrome refused to store this. Try shorter instructions or fewer presets."
+  },
+  "optDelete": {
+    "message": "Delete"
+  },
+  "optLabelPlaceholder": {
+    "message": "Label, e.g. \"House tone of voice\""
+  },
+  "optInstructionPlaceholder": {
+    "message": "Instruction to the model, e.g. \"Rewrite this in plain, direct language. No superlatives, no exclamation marks. Return only the rewritten text.\""
+  },
+  "optEnglishOnly": {
+    "message": "Only offer this for English text"
+  },
+  "welcomeTitle": {
+    "message": "Second Draft is installed"
+  },
+  "welcomeSub": {
+    "message": "It rewrites what you typed, on your machine, and never replaces it without asking."
+  },
+  "welcomeStep1": {
+    "message": "Click into any text field on any site and type something."
+  },
+  "welcomeStep2": {
+    "message": "Press the keyboard shortcut, or right-click the field and choose Second Draft."
+  },
+  "welcomeStep3": {
+    "message": "Pick a rewrite, edit it if you want, then press Insert. Cmd/Ctrl+Z brings back your original."
+  },
+  "welcomeNote": {
+    "message": "The first run downloads Chrome's on-device model, which is a few gigabytes and takes a while. Click the toolbar icon to start it and watch the progress. Nothing you type is ever sent anywhere."
+  }
+}

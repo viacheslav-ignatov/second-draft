@@ -1,0 +1,86 @@
+body {
+  width: 320px;
+  margin: 0;
+  padding: 14px;
+  background: var(--sd-bg);
+  color: var(--sd-fg);
+  font: 13px/1.5 var(--sd-font);
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+
+.state {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sd-fg-muted);
+}
+
+.dot.ok {
+  background: var(--sd-success);
+}
+
+.dot.warn {
+  background: var(--sd-warning);
+}
+
+.dot.bad {
+  background: var(--sd-danger);
+}
+
+p {
+  margin: 0 0 10px;
+  color: var(--sd-fg-muted);
+}
+
+button {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--sd-button-border);
+  border-radius: var(--sd-radius);
+  background: var(--sd-success);
+  color: #fff;
+  font: 600 12px/1 inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.links {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  font-size: 12px;
+}
+
+a {
+  color: var(--sd-accent);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.kbd {
+  padding: 2px 5px;
+  border: 1px solid var(--sd-border);
+  border-radius: 4px;
+  background: var(--sd-bg-subtle);
+  font: 600 11px/1 var(--sd-font-mono);
+}

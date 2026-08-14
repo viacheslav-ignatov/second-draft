@@ -1,0 +1,187 @@
+/* Injected into a shadow root together with the tokens, so page CSS cannot reach
+   it and these rules cannot leak out. `all: initial` resets anything inherited
+   from the host page; the custom properties are re-declared after it. */
+
+:host {
+  all: initial;
+}
+
+.panel {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2147483647;
+  width: 420px;
+  max-width: calc(100vw - 32px);
+  overflow: hidden;
+  border: 1px solid var(--sd-border);
+  border-radius: var(--sd-radius-lg);
+  background: var(--sd-bg);
+  box-shadow: var(--sd-shadow);
+  color: var(--sd-fg);
+  font: 13px/1.5 var(--sd-font);
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--sd-border);
+  background: var(--sd-bg-subtle);
+}
+
+header b {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.close {
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  color: var(--sd-fg-muted);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.body {
+  padding: 12px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.chip {
+  padding: 5px 8px;
+  border: 1px solid var(--sd-accent-border);
+  border-radius: 12px;
+  background: var(--sd-accent-bg);
+  color: var(--sd-accent);
+  font: 600 11px/1 inherit;
+  cursor: pointer;
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--sd-accent);
+  color: var(--sd-accent-fg);
+}
+
+.chip.off {
+  border-color: var(--sd-border);
+  background: var(--sd-bg-subtle);
+  color: var(--sd-fg-muted);
+  text-decoration: line-through;
+  cursor: default;
+}
+
+.chip:focus-visible,
+button.act:focus-visible,
+textarea:focus-visible,
+.close:focus-visible {
+  outline: 2px solid var(--sd-accent);
+  outline-offset: 1px;
+}
+
+.lang {
+  margin-bottom: 6px;
+  color: var(--sd-fg-muted);
+  font-size: 11px;
+}
+
+.orig {
+  max-height: 54px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--sd-border);
+  color: var(--sd-fg-muted);
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 96px;
+  padding: 8px;
+  border: 1px solid var(--sd-border);
+  border-radius: var(--sd-radius);
+  background: var(--sd-bg);
+  color: inherit;
+  font: inherit;
+  resize: vertical;
+}
+
+.status {
+  min-height: 18px;
+  margin-top: 8px;
+  color: var(--sd-fg-muted);
+  font-size: 12px;
+}
+
+.status.err {
+  color: var(--sd-danger);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+button.act {
+  padding: 7px 12px;
+  border: 1px solid var(--sd-button-border);
+  border-radius: var(--sd-radius);
+  background: var(--sd-button-bg);
+  color: var(--sd-fg);
+  font: 600 12px/1 inherit;
+  cursor: pointer;
+}
+
+button.act.primary {
+  background: var(--sd-success);
+  color: #fff;
+}
+
+button.act:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.hint {
+  margin-top: 8px;
+  color: var(--sd-fg-muted);
+  font-size: 11px;
+}
+
+/* Media queries inside an iframe resolve against that frame, so a 320px comment
+   widget gets a panel that actually fits it. */
+@media (width <= 470px) {
+  .panel {
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+    width: auto;
+    max-width: none;
+  }
+
+  .orig {
+    max-height: 36px;
+  }
+
+  textarea {
+    min-height: 72px;
+  }
+
+  .actions {
+    flex-wrap: wrap;
+  }
+}
