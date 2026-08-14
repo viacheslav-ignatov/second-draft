@@ -219,9 +219,14 @@ export function insert(target: Target, text: string): InsertResult {
   }
 
   // Deprecated, and deliberately so: it is the only insertion path that lands in
-  // Chrome's native undo stack, which is what keeps Cmd+Z working.
-  // Deprecated and on its way out, so its absence is a supported case rather
-  // than a crash: the fallback below still works, it just loses undo.
+  // Chrome's native undo stack, which is what keeps Cmd+Z working. It is also on
+  // its way out, so its absence is a supported case rather than a crash — the
+  // fallback below still works, it just loses undo.
+  //
+  // It inserts plain text, so in a rich editor any formatting inside the range
+  // being replaced is flattened. That is not recoverable here: `capture()` reads
+  // the field with `innerText`, so the model never saw the formatting to begin
+  // with. Undo restores it, which is the other reason this path is worth keeping.
   const insertedNatively =
     typeof document.execCommand === "function" &&
     document.execCommand("insertText", false, text);

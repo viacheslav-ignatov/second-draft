@@ -117,6 +117,14 @@ hardware bar excludes a lot of laptops. Writer, Rewriter and Proofreader are
 still origin-trial APIs in some builds, so those routes fall through to the
 Prompt API and the output is a little less faithful.
 
+**A rich editor gets plain text back.** The extension reads a field as text and
+writes text back, so anywhere you can make words bold, the formatting inside the
+part being rewritten is flattened — bold, links, lists, inline code. Everything
+outside that part is left alone, and the insertion goes through the native undo
+stack, so <kbd>Cmd</kbd>+<kbd>Z</kbd> puts the original back exactly. Selecting
+the sentence you want changed, rather than invoking on the whole field, keeps
+that to the sentence.
+
 ## How it works
 
 ```
