@@ -11,9 +11,18 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const manifest = JSON.parse(readFileSync("src/static/manifest.json", "utf8"));
+const pkg = JSON.parse(readFileSync("package.json", "utf8"));
 const problems = [];
 
 if (manifest.manifest_version !== 3) problems.push("not manifest v3");
+
+// The store rejects a re-upload of the same version, so the two files drifting
+// apart is found at the worst possible moment. They agree today by luck.
+if (pkg.version !== manifest.version) {
+  problems.push(
+    `version drift: package.json ${pkg.version} vs manifest ${manifest.version}`,
+  );
+}
 if (manifest.host_permissions?.length)
   problems.push("host_permissions must stay empty");
 if (manifest.content_scripts?.length)
