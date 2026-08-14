@@ -10,19 +10,26 @@ interface DetectionResult {
 }
 
 interface DetectorApi {
-  create(options: unknown): Promise<{ detect(text: string): Promise<DetectionResult[]> }>;
+  create(
+    options: unknown,
+  ): Promise<{ detect(text: string): Promise<DetectionResult[]> }>;
 }
 
 function displayName(code: string): string | null {
   try {
-    const names = new Intl.DisplayNames([chrome.i18n.getUILanguage()], { type: "language" });
+    const names = new Intl.DisplayNames([chrome.i18n.getUILanguage()], {
+      type: "language",
+    });
     return names.of(code) ?? code;
   } catch {
     return code;
   }
 }
 
-export async function detectLanguage(text: string, post: Post): Promise<DetectedLanguage | null> {
+export async function detectLanguage(
+  text: string,
+  post: Post,
+): Promise<DetectedLanguage | null> {
   const api = resolveGlobal<DetectorApi>("LanguageDetector");
   if (!api) return null;
 
@@ -33,7 +40,11 @@ export async function detectLanguage(text: string, post: Post): Promise<Detected
     "detector",
     () =>
       api.create({
-        monitor: downloadMonitor(post, state === "downloadable", "assetLanguagePack"),
+        monitor: downloadMonitor(
+          post,
+          state === "downloadable",
+          "assetLanguagePack",
+        ),
       }),
     (detector) => detector.detect(text),
     post,

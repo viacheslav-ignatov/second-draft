@@ -21,7 +21,9 @@ export const storageKey = (id: string): string => KEY_PREFIX + id;
 export const isPresetKey = (key: string): boolean => key.startsWith(KEY_PREFIX);
 
 /** Pure: turns a raw storage dump into a validated, ordered, capped list. */
-export function presetsFromStorage(all: Record<string, unknown>): CustomPreset[] {
+export function presetsFromStorage(
+  all: Record<string, unknown>,
+): CustomPreset[] {
   const list = Object.entries(all)
     .filter(([key]) => isPresetKey(key))
     .map(([, value]) => normalizeCustomPreset(value))
@@ -63,7 +65,8 @@ export async function writePresets(
 /** 0.4.0 kept every preset in one `customPresets` array. Move them across once. */
 export async function migrateLegacyPresets(): Promise<void> {
   try {
-    const { customPresets: legacy } = await chrome.storage.sync.get("customPresets");
+    const { customPresets: legacy } =
+      await chrome.storage.sync.get("customPresets");
     if (!Array.isArray(legacy) || legacy.length === 0) return;
     const migrated = legacy
       .map(normalizeCustomPreset)

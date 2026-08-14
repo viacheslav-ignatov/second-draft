@@ -11,7 +11,9 @@ import type { ChunkReply, StatusReply } from "../../shared/messages.ts";
 import { isAbortError, isDeadSession } from "./availability.ts";
 
 /** How the executors report progress back to the panel. */
-export type Post = (reply: Omit<StatusReply, "id"> | Omit<ChunkReply, "id">) => void;
+export type Post = (
+  reply: Omit<StatusReply, "id"> | Omit<ChunkReply, "id">,
+) => void;
 
 interface DownloadProgressEvent extends Event {
   loaded: number;
@@ -34,7 +36,8 @@ interface Monitor {
 export function downloadMonitor(
   post: Post,
   isFirstDownload: boolean,
-  assetKey: "assetModel" | "assetLanguagePack" | "assetTranslationPack" = "assetModel",
+  assetKey:
+    "assetModel" | "assetLanguagePack" | "assetTranslationPack" = "assetModel",
 ) {
   const asset = t(assetKey);
   return (monitor: Monitor): void => {
@@ -76,7 +79,10 @@ export function loadedPromptSession<T>(): Promise<T> | null {
 
 export const PROMPT_KEY = "prompt";
 
-export function warmCache<T>(key: string, factory: () => Promise<T>): Promise<T> {
+export function warmCache<T>(
+  key: string,
+  factory: () => Promise<T>,
+): Promise<T> {
   return cached(key, factory);
 }
 

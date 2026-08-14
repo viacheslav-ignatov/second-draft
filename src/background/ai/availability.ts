@@ -30,7 +30,10 @@ export function resolveGlobal<T>(name: string): T | null {
   return value === undefined ? null : (value as T);
 }
 
-export async function availabilityOf(api: unknown, options?: unknown): Promise<Availability> {
+export async function availabilityOf(
+  api: unknown,
+  options?: unknown,
+): Promise<Availability> {
   if (!api) return "unavailable";
   const probe = api as Probeable;
   try {
@@ -51,7 +54,9 @@ export const isUsable = (state: Availability): boolean =>
   state === "available" || state === "readily";
 
 export const needsDownload = (state: Availability): boolean =>
-  state === "downloadable" || state === "downloading" || state === "after-download";
+  state === "downloadable" ||
+  state === "downloading" ||
+  state === "after-download";
 
 /** Reachable at all, whether or not the asset still has to be fetched. */
 export const isSupported = (state: Availability): boolean =>

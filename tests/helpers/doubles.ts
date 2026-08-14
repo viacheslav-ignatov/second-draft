@@ -10,7 +10,9 @@ interface Listener<T extends unknown[]> {
   addListener(fn: (...args: T) => void): void;
 }
 
-function listenerSet<T extends unknown[]>(): Listener<T> & { emit(...args: T): void } {
+function listenerSet<T extends unknown[]>(): Listener<T> & {
+  emit(...args: T): void;
+} {
   const fns: ((...args: T) => void)[] = [];
   return {
     addListener: (fn) => fns.push(fn),
@@ -57,7 +59,9 @@ export interface ChromeStub {
 }
 
 /** Installs a minimal `chrome` global and returns handles into it. */
-export function installChrome(storage: Record<string, unknown> = {}): ChromeStub {
+export function installChrome(
+  storage: Record<string, unknown> = {},
+): ChromeStub {
   const connections = listenerSet<[chrome.runtime.Port]>();
 
   const stub = {
@@ -75,7 +79,11 @@ export function installChrome(storage: Record<string, unknown> = {}): ChromeStub
     storage: {
       sync: {
         get: (keys: unknown) =>
-          Promise.resolve(typeof keys === "string" ? { [keys]: storage[keys] } : { ...storage }),
+          Promise.resolve(
+            typeof keys === "string"
+              ? { [keys]: storage[keys] }
+              : { ...storage },
+          ),
         set: (items: Record<string, unknown>) => {
           Object.assign(storage, items);
           return Promise.resolve();
@@ -113,7 +121,9 @@ export interface FakeModelOptions {
  * A stand-in for `LanguageModel` that streams slowly enough to be cancelled and
  * records whether the abort signal was honoured.
  */
-export function installLanguageModel(options: FakeModelOptions = {}): { aborted: () => boolean } {
+export function installLanguageModel(options: FakeModelOptions = {}): {
+  aborted: () => boolean;
+} {
   const { chunks = ["one ", "two ", "three"], delayMs = 0 } = options;
   let aborted = false;
 
@@ -134,7 +144,8 @@ export function installLanguageModel(options: FakeModelOptions = {}): { aborted:
       try {
         for (const chunk of chunks) {
           if (signal?.aborted) return;
-          if (delayMs) await new Promise((resolve) => setTimeout(resolve, delayMs));
+          if (delayMs)
+            await new Promise((resolve) => setTimeout(resolve, delayMs));
           yield chunk;
         }
       } finally {

@@ -28,14 +28,20 @@ async function flagUninjectable(tabId: number): Promise<void> {
   try {
     await chrome.action.setBadgeText({ tabId, text: "!" });
     await chrome.action.setBadgeBackgroundColor({ tabId, color: "#cf222e" });
-    setTimeout(() => void chrome.action.setBadgeText({ tabId, text: "" }).catch(noop), 4000);
+    setTimeout(
+      () => void chrome.action.setBadgeText({ tabId, text: "" }).catch(noop),
+      4000,
+    );
   } catch {
     /* tab closed */
   }
 }
 
 /** Injects if needed, then broadcasts. Only the frame with the field replies. */
-export async function dispatchToTab(tabId: number, message: TabMessage): Promise<void> {
+export async function dispatchToTab(
+  tabId: number,
+  message: TabMessage,
+): Promise<void> {
   try {
     await injectPanel(tabId);
   } catch (error) {

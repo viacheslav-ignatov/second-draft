@@ -14,13 +14,24 @@ const manifest = JSON.parse(readFileSync("src/static/manifest.json", "utf8"));
 const problems = [];
 
 if (manifest.manifest_version !== 3) problems.push("not manifest v3");
-if (manifest.host_permissions?.length) problems.push("host_permissions must stay empty");
-if (manifest.content_scripts?.length) problems.push("content scripts must be injected on demand");
-if (manifest.background?.type !== "module") problems.push("service worker must be a module");
+if (manifest.host_permissions?.length)
+  problems.push("host_permissions must stay empty");
+if (manifest.content_scripts?.length)
+  problems.push("content scripts must be injected on demand");
+if (manifest.background?.type !== "module")
+  problems.push("service worker must be a module");
 
-const EXPECTED_PERMISSIONS = ["contextMenus", "activeTab", "scripting", "storage"];
-const extra = (manifest.permissions ?? []).filter((p) => !EXPECTED_PERMISSIONS.includes(p));
-if (extra.length) problems.push(`unjustified permission(s): ${extra.join(", ")}`);
+const EXPECTED_PERMISSIONS = [
+  "contextMenus",
+  "activeTab",
+  "scripting",
+  "storage",
+];
+const extra = (manifest.permissions ?? []).filter(
+  (p) => !EXPECTED_PERMISSIONS.includes(p),
+);
+if (extra.length)
+  problems.push(`unjustified permission(s): ${extra.join(", ")}`);
 
 // Everything the manifest points at has to exist in the built output.
 if (existsSync("dist")) {
@@ -31,7 +42,8 @@ if (existsSync("dist")) {
     ...Object.values(manifest.icons ?? {}),
   ].filter(Boolean);
   for (const file of referenced) {
-    if (!existsSync(join("dist", file))) problems.push(`manifest references missing file: ${file}`);
+    if (!existsSync(join("dist", file)))
+      problems.push(`manifest references missing file: ${file}`);
   }
 }
 
@@ -40,4 +52,6 @@ if (problems.length) {
   process.exit(1);
 }
 
-console.log(`  ✓ v${manifest.version}, ${manifest.permissions.join(", ")}, no host permissions`);
+console.log(
+  `  ✓ v${manifest.version}, ${manifest.permissions.join(", ")}, no host permissions`,
+);

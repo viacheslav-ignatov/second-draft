@@ -25,7 +25,9 @@ export async function buildMenus(): Promise<void> {
 }
 
 /** The preset id behind a menu item, or `null` if it is not one of ours. */
-export function presetIdFromMenuItem(menuItemId: string | number): string | null {
+export function presetIdFromMenuItem(
+  menuItemId: string | number,
+): string | null {
   const id = String(menuItemId);
   return id.startsWith(MENU_PREFIX) ? id.slice(MENU_PREFIX.length) : null;
 }

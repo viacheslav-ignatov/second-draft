@@ -41,8 +41,10 @@ const reference = new Set(Object.keys(locales.en ?? {}));
 for (const name of names) {
   if (name === "en") continue;
   const keys = new Set(Object.keys(locales[name]));
-  for (const key of reference) if (!keys.has(key)) fail(`${name} is missing key "${key}"`);
-  for (const key of keys) if (!reference.has(key)) fail(`${name} has extra key "${key}"`);
+  for (const key of reference)
+    if (!keys.has(key)) fail(`${name} is missing key "${key}"`);
+  for (const key of keys)
+    if (!reference.has(key)) fail(`${name} has extra key "${key}"`);
 }
 
 // ---------- placeholders are declared ----------
@@ -54,11 +56,17 @@ for (const [name, messages] of Object.entries(locales)) {
       continue;
     }
     const used = new Set(
-      [...entry.message.matchAll(/\$([A-Za-z0-9_]+)\$/g)].map((m) => m[1].toLowerCase()),
+      [...entry.message.matchAll(/\$([A-Za-z0-9_]+)\$/g)].map((m) =>
+        m[1].toLowerCase(),
+      ),
     );
-    const declared = new Set(Object.keys(entry.placeholders ?? {}).map((p) => p.toLowerCase()));
-    for (const p of used) if (!declared.has(p)) fail(`${name}/${key} uses undeclared $${p}$`);
-    for (const p of declared) if (!used.has(p)) fail(`${name}/${key} declares unused $${p}$`);
+    const declared = new Set(
+      Object.keys(entry.placeholders ?? {}).map((p) => p.toLowerCase()),
+    );
+    for (const p of used)
+      if (!declared.has(p)) fail(`${name}/${key} uses undeclared $${p}$`);
+    for (const p of declared)
+      if (!used.has(p)) fail(`${name}/${key} declares unused $${p}$`);
   }
 }
 
@@ -75,7 +83,8 @@ function walk(dir) {
 for (const file of walk(SRC)) {
   const html = readFileSync(file, "utf8");
   for (const match of html.matchAll(/data-i18n="([A-Za-z0-9_]+)"/g)) {
-    if (!reference.has(match[1])) fail(`${file} binds unknown key "${match[1]}"`);
+    if (!reference.has(match[1]))
+      fail(`${file} binds unknown key "${match[1]}"`);
   }
 }
 
@@ -83,7 +92,8 @@ for (const file of walk(SRC)) {
 
 const manifest = readFileSync(join(SRC, "static", "manifest.json"), "utf8");
 for (const match of manifest.matchAll(/__MSG_([A-Za-z0-9_]+)__/g)) {
-  if (!reference.has(match[1])) fail(`manifest references unknown key "${match[1]}"`);
+  if (!reference.has(match[1]))
+    fail(`manifest references unknown key "${match[1]}"`);
 }
 
 if (failed) {
@@ -91,4 +101,6 @@ if (failed) {
   process.exit(1);
 }
 
-console.log(`  ✓ ${names.length} locales, ${reference.size} keys, placeholders consistent`);
+console.log(
+  `  ✓ ${names.length} locales, ${reference.size} keys, placeholders consistent`,
+);

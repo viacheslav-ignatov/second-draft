@@ -85,9 +85,11 @@ function attach(port: chrome.runtime.Port): void {
       case "run":
         cancelInFlight();
         inFlight = { controller: new AbortController(), id: message.id };
-        void runGeneration(message, post, inFlight.controller.signal).finally(() => {
-          if (inFlight?.id === message.id) inFlight = null;
-        });
+        void runGeneration(message, post, inFlight.controller.signal).finally(
+          () => {
+            if (inFlight?.id === message.id) inFlight = null;
+          },
+        );
         return;
     }
   });
@@ -130,7 +132,13 @@ async function runGeneration(
 
     post({ type: "status", text: t("statusThinking") });
 
-    const output = await execute({ preset, text, language: request.language, post, signal });
+    const output = await execute({
+      preset,
+      text,
+      language: request.language,
+      post,
+      signal,
+    });
 
     if (signal.aborted) return;
     if (output == null) {

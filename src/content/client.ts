@@ -26,7 +26,8 @@ export class WorkerClient {
   private port: chrome.runtime.Port | null = null;
   private runId = 0;
   private detectId = 0;
-  private pendingDetect: ((language: DetectedLanguage | null) => void) | null = null;
+  private pendingDetect: ((language: DetectedLanguage | null) => void) | null =
+    null;
   private language: DetectedLanguage | null = null;
 
   constructor(private readonly handlers: ClientHandlers) {}
@@ -97,7 +98,13 @@ export class WorkerClient {
   }
 
   run(presetId: string, text: string): void {
-    this.send({ type: "run", presetId, text, language: this.language, id: ++this.runId });
+    this.send({
+      type: "run",
+      presetId,
+      text,
+      language: this.language,
+      id: ++this.runId,
+    });
   }
 
   get detectedLanguage(): DetectedLanguage | null {

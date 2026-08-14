@@ -10,7 +10,12 @@ import assert from "node:assert/strict";
 
 import { resetSessions } from "../src/background/ai/sessions.ts";
 import { registerPort } from "../src/background/port.ts";
-import { clearGlobals, fakePort, installChrome, installLanguageModel } from "./helpers/doubles.ts";
+import {
+  clearGlobals,
+  fakePort,
+  installChrome,
+  installLanguageModel,
+} from "./helpers/doubles.ts";
 
 /**
  * `registerPort` attaches to whichever `chrome` stub is current, so each case
@@ -49,14 +54,21 @@ test("a reply carries the id of the request that caused it", async () => {
 
   assert.ok(connection.sent.length > 0, "the worker replied");
   for (const reply of connection.sent) {
-    assert.equal(reply.id, 7, `every reply is tagged: ${JSON.stringify(reply)}`);
+    assert.equal(
+      reply.id,
+      7,
+      `every reply is tagged: ${JSON.stringify(reply)}`,
+    );
   }
   assert.equal(connection.sent.at(-1)?.type, "done");
 });
 
 test("a second run aborts the first instead of interleaving output", async () => {
   const chrome = installChrome();
-  const model = installLanguageModel({ chunks: ["a", "b", "c", "d"], delayMs: 10 });
+  const model = installLanguageModel({
+    chunks: ["a", "b", "c", "d"],
+    delayMs: 10,
+  });
   startWorker();
 
   const connection = fakePort();
@@ -69,10 +81,18 @@ test("a second run aborts the first instead of interleaving output", async () =>
 
   assert.ok(model.aborted(), "the first generation saw the abort signal");
 
-  const firstRunFinished = connection.sent.some((r) => r.id === 1 && r.type === "done");
-  assert.equal(firstRunFinished, false, "the superseded run never reports done");
+  const firstRunFinished = connection.sent.some(
+    (r) => r.id === 1 && r.type === "done",
+  );
+  assert.equal(
+    firstRunFinished,
+    false,
+    "the superseded run never reports done",
+  );
 
-  const secondRunFinished = connection.sent.some((r) => r.id === 2 && r.type === "done");
+  const secondRunFinished = connection.sent.some(
+    (r) => r.id === 2 && r.type === "done",
+  );
   assert.equal(secondRunFinished, true, "the current run does");
 });
 

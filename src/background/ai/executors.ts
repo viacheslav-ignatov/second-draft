@@ -38,12 +38,24 @@ type Route = (context: ExecutionContext) => Promise<string | null>;
 
 interface TranslatorApi {
   create(options: unknown): Promise<{
-    translate(text: string, options?: { signal?: AbortSignal }): Promise<string>;
-    translateStreaming?(text: string, options?: { signal?: AbortSignal }): AsyncIterable<string>;
+    translate(
+      text: string,
+      options?: { signal?: AbortSignal },
+    ): Promise<string>;
+    translateStreaming?(
+      text: string,
+      options?: { signal?: AbortSignal },
+    ): AsyncIterable<string>;
   }>;
 }
 
-const viaTranslator: Route = async ({ preset, text, language, post, signal }) => {
+const viaTranslator: Route = async ({
+  preset,
+  text,
+  language,
+  post,
+  signal,
+}) => {
   const api = resolveGlobal<TranslatorApi>("Translator");
   if (!api || !preset.translator) return null;
 
@@ -54,7 +66,8 @@ const viaTranslator: Route = async ({ preset, text, language, post, signal }) =>
 
   const config = { sourceLanguage: source, targetLanguage: target };
   const state = await availabilityOf(api, config);
-  if (!isSupported(state)) throw new Error(t("errNoPack", [language?.name ?? source]));
+  if (!isSupported(state))
+    throw new Error(t("errNoPack", [language?.name ?? source]));
 
   const first = state === "downloadable";
   if (first) post({ type: "status", text: t("statusFirstPack") });
@@ -119,7 +132,9 @@ const viaProofreader: Route = async ({ preset, text, language, post }) => {
   );
 
   if (typeof result === "string") return result;
-  return result?.correctedInput ?? result?.corrected ?? result?.correction ?? null;
+  return (
+    result?.correctedInput ?? result?.corrected ?? result?.correction ?? null
+  );
 };
 
 // ---------------------------------------------------------------------------
@@ -129,7 +144,10 @@ const viaProofreader: Route = async ({ preset, text, language, post }) => {
 interface RewriterApi {
   create(options: unknown): Promise<{
     rewrite(text: string, options?: { signal?: AbortSignal }): Promise<string>;
-    rewriteStreaming?(text: string, options?: { signal?: AbortSignal }): AsyncIterable<string>;
+    rewriteStreaming?(
+      text: string,
+      options?: { signal?: AbortSignal },
+    ): AsyncIterable<string>;
   }>;
 }
 
@@ -141,7 +159,11 @@ const viaRewriter: Route = async ({ preset, text, post, signal }) => {
   const api = resolveGlobal<RewriterApi>("Rewriter");
   if (!api || !preset.rewriter) return null;
 
-  const config = { ...preset.rewriter, format: "plain-text", sharedContext: SHARED_CONTEXT };
+  const config = {
+    ...preset.rewriter,
+    format: "plain-text",
+    sharedContext: SHARED_CONTEXT,
+  };
   const state = await availabilityOf(api, config);
   if (!isSupported(state)) return null;
 
@@ -166,7 +188,10 @@ const viaRewriter: Route = async ({ preset, text, post, signal }) => {
 
 interface PromptSession {
   prompt(input: string, options?: { signal?: AbortSignal }): Promise<string>;
-  promptStreaming?(input: string, options?: { signal?: AbortSignal }): AsyncIterable<string>;
+  promptStreaming?(
+    input: string,
+    options?: { signal?: AbortSignal },
+  ): AsyncIterable<string>;
   clone?(): Promise<PromptSession>;
   destroy?(): void;
   measureInputUsage?(input: string): Promise<number>;
@@ -184,11 +209,12 @@ const SYSTEM_PROMPT =
   "translate. Output the rewritten text and nothing else: no preamble, no " +
   "quotes, no explanation.";
 
-const promptFactory = (api: LanguageModelApi, post: Post, first: boolean) => () =>
-  api.create({
-    monitor: downloadMonitor(post, first),
-    initialPrompts: [{ role: "system", content: SYSTEM_PROMPT }],
-  });
+const promptFactory =
+  (api: LanguageModelApi, post: Post, first: boolean) => () =>
+    api.create({
+      monitor: downloadMonitor(post, first),
+      initialPrompts: [{ role: "system", content: SYSTEM_PROMPT }],
+    });
 
 const viaPrompt: Route = async ({ preset, text, post, signal }) => {
   const api = resolveGlobal<LanguageModelApi>("LanguageModel");
@@ -211,10 +237,15 @@ const viaPrompt: Route = async ({ preset, text, post, signal }) => {
     promptFactory(api, post, first),
     async (base) => {
       if (await exceedsQuota(base, input)) throw new Error(t("errTooLong"));
-      const session = typeof base.clone === "function" ? await base.clone() : base;
+      const session =
+        typeof base.clone === "function" ? await base.clone() : base;
       try {
         if (typeof session.promptStreaming === "function") {
-          return await collect(session.promptStreaming(input, { signal }), post, signal);
+          return await collect(
+            session.promptStreaming(input, { signal }),
+            post,
+            signal,
+          );
         }
         return await session.prompt(input, { signal });
       } finally {
@@ -230,7 +261,9 @@ const viaPrompt: Route = async ({ preset, text, post, signal }) => {
 const ROUTES: Route[] = [viaTranslator, viaProofreader, viaRewriter, viaPrompt];
 
 /** `null` when no route could run at all — i.e. built-in AI is unavailable. */
-export async function execute(context: ExecutionContext): Promise<string | null> {
+export async function execute(
+  context: ExecutionContext,
+): Promise<string | null> {
   for (const route of ROUTES) {
     const result = await route(context);
     if (result != null) return result;
@@ -245,7 +278,9 @@ export async function execute(context: ExecutionContext): Promise<string | null>
  * start the initial download — that is left to the popup, which has a real click
  * behind it, so this reports `downloadable` instead of hanging.
  */
-export async function warmUp(post: Post): Promise<"ready" | "downloadable" | "unavailable"> {
+export async function warmUp(
+  post: Post,
+): Promise<"ready" | "downloadable" | "unavailable"> {
   const api = resolveGlobal<LanguageModelApi>("LanguageModel");
   if (!api) return "unavailable";
   const state = await availabilityOf(api);

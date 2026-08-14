@@ -38,7 +38,9 @@ const all = readdirSync("dist", { recursive: true })
   .filter((f) => statSync(f).isFile())
   .reduce((sum, f) => sum + statSync(f).size, 0);
 
-console.log(`  ${total.toFixed(1)} kB of script, ${(all / 1024).toFixed(1)} kB packaged`);
+console.log(
+  `  ${total.toFixed(1)} kB of script, ${(all / 1024).toFixed(1)} kB packaged`,
+);
 
 if (failed) {
   console.error("bundle size check failed");

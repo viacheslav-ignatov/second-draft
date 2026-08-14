@@ -132,7 +132,8 @@ export function isRunReply(
 
 /** Worker → tab, telling the panel to open. Broadcast to every frame. */
 export type TabMessage =
-  { type: "REWRITE_WITH"; presetId: string; selectionText: string } | { type: "SHOW_PICKER" };
+  | { type: "REWRITE_WITH"; presetId: string; selectionText: string }
+  | { type: "SHOW_PICKER" };
 
 /** Page or popup → worker. */
 export type RuntimeMessage = { type: "GET_PRESETS" } | { type: "GET_STATE" };

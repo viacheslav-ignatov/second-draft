@@ -49,7 +49,9 @@ export function isEnglishCode(code: string | null | undefined): boolean {
 }
 
 /** Whether a detection is confident enough to act on. */
-export function languageIsCertain(language: DetectedLanguage | null | undefined): boolean {
+export function languageIsCertain(
+  language: DetectedLanguage | null | undefined,
+): boolean {
   if (!language?.code) return false;
   if (language.confidence == null) return true; // no figure given: trust it
   return language.confidence >= CONFIDENCE_FLOOR;
@@ -92,7 +94,8 @@ export function normalizeCustomPreset(raw: unknown): CustomPreset | null {
   const value = raw as Partial<CustomPreset>;
   const id = typeof value.id === "string" ? value.id.trim() : "";
   const label = typeof value.label === "string" ? value.label.trim() : "";
-  const instruction = typeof value.instruction === "string" ? value.instruction.trim() : "";
+  const instruction =
+    typeof value.instruction === "string" ? value.instruction.trim() : "";
   if (!id || !label || !instruction) return null;
   return {
     id,
@@ -104,6 +107,10 @@ export function normalizeCustomPreset(raw: unknown): CustomPreset | null {
 }
 
 /** Stable order regardless of the order storage happens to return keys in. */
-export function sortCustomPresets<T extends { id: string; createdAt: number }>(list: T[]): T[] {
-  return [...list].sort((a, b) => a.createdAt - b.createdAt || a.id.localeCompare(b.id));
+export function sortCustomPresets<T extends { id: string; createdAt: number }>(
+  list: T[],
+): T[] {
+  return [...list].sort(
+    (a, b) => a.createdAt - b.createdAt || a.id.localeCompare(b.id),
+  );
 }

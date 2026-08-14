@@ -168,7 +168,11 @@ test("insertion fires the events a controlled input listens for", async () => {
   const captured = target.capture();
   target.insert(captured!, "after");
 
-  assert.deepEqual(seen, ["input", "change"], "a React-controlled field needs both");
+  assert.deepEqual(
+    seen,
+    ["input", "change"],
+    "a React-controlled field needs both",
+  );
 });
 
 test("inserting into a field that has left the DOM fails cleanly", async () => {

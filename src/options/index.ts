@@ -11,7 +11,8 @@ import {
   type CustomPreset,
 } from "../shared/rules.ts";
 
-const $ = <T extends HTMLElement>(id: string): T => document.getElementById(id) as T;
+const $ = <T extends HTMLElement>(id: string): T =>
+  document.getElementById(id) as T;
 
 localizeDocument();
 
@@ -68,7 +69,10 @@ function presetCard(preset: CustomPreset, index: number): HTMLElement {
   const englishOnly = document.createElement("input");
   englishOnly.type = "checkbox";
   englishOnly.checked = preset.englishOnly;
-  englishOnly.addEventListener("change", () => (presets[index]!.englishOnly = englishOnly.checked));
+  englishOnly.addEventListener(
+    "change",
+    () => (presets[index]!.englishOnly = englishOnly.checked),
+  );
 
   const check = document.createElement("label");
   check.className = "check";
@@ -89,7 +93,9 @@ function render(): void {
     list.appendChild(empty);
   }
 
-  presets.forEach((preset, index) => list.appendChild(presetCard(preset, index)));
+  presets.forEach((preset, index) =>
+    list.appendChild(presetCard(preset, index)),
+  );
   $<HTMLButtonElement>("add").disabled = presets.length >= CUSTOM_LIMIT;
 }
 
@@ -102,13 +108,17 @@ $("add").addEventListener("click", () => {
     createdAt: Date.now(),
   });
   render();
-  $("list").querySelector<HTMLInputElement>(".preset:last-child input")?.focus();
+  $("list")
+    .querySelector<HTMLInputElement>(".preset:last-child input")
+    ?.focus();
 });
 
 $("save").addEventListener("click", () => {
   void (async () => {
     const clean = sortCustomPresets(
-      presets.map(normalizeCustomPreset).filter((p): p is CustomPreset => p !== null),
+      presets
+        .map(normalizeCustomPreset)
+        .filter((p): p is CustomPreset => p !== null),
     ).slice(0, CUSTOM_LIMIT);
 
     try {

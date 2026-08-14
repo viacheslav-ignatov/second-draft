@@ -12,6 +12,10 @@ const out = `second-draft-${version}.zip`;
 
 mkdirSync("release", { recursive: true });
 rmSync(`release/${out}`, { force: true });
-execFileSync("zip", ["-r", "-q", `../release/${out}`, ".", "-x", "*.DS_Store"], { cwd: "dist" });
+execFileSync(
+  "zip",
+  ["-r", "-q", `../release/${out}`, ".", "-x", "*.DS_Store"],
+  { cwd: "dist" },
+);
 
 console.log(`packaged release/${out}`);

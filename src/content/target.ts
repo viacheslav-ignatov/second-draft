@@ -26,11 +26,20 @@ export interface Target {
 
 export function isEditable(el: Element | null | undefined): el is HTMLElement {
   if (!el?.isConnected) return false;
-  const element = el as HTMLElement & { disabled?: boolean; readOnly?: boolean; type?: string };
+  const element = el as HTMLElement & {
+    disabled?: boolean;
+    readOnly?: boolean;
+    type?: string;
+  };
   if (element.isContentEditable) return true;
-  if (element.tagName === "TEXTAREA") return !element.disabled && !element.readOnly;
+  if (element.tagName === "TEXTAREA")
+    return !element.disabled && !element.readOnly;
   if (element.tagName === "INPUT") {
-    return TEXT_INPUT_TYPES.test(element.type ?? "") && !element.disabled && !element.readOnly;
+    return (
+      TEXT_INPUT_TYPES.test(element.type ?? "") &&
+      !element.disabled &&
+      !element.readOnly
+    );
   }
   return false;
 }
@@ -67,7 +76,8 @@ export function trackFocus(): void {
 const MENU_CLAIM_WINDOW_MS = 60_000;
 
 /** Whether this frame was the one the user just right-clicked in. */
-export const claimedByMenu = (): boolean => Date.now() - lastMenuAt < MENU_CLAIM_WINDOW_MS;
+export const claimedByMenu = (): boolean =>
+  Date.now() - lastMenuAt < MENU_CLAIM_WINDOW_MS;
 
 /**
  * In a parent document, `activeElement` is the `<iframe>` element while a child
@@ -92,14 +102,21 @@ export function capture(selectionText = ""): Target | null {
 
   if (el.isContentEditable) {
     const root = el.getRootNode() as Document | ShadowRoot;
-    const selection = (root as Document).getSelection?.() ?? window.getSelection();
-    const selected = selection && !selection.isCollapsed ? selection.toString() : selectionText;
+    const selection =
+      (root as Document).getSelection?.() ?? window.getSelection();
+    const selected =
+      selection && !selection.isCollapsed
+        ? selection.toString()
+        : selectionText;
     return {
       el,
       contentEditable: true,
       text: selected || el.innerText,
       wholeField: !selected,
-      range: selected && selection?.rangeCount ? selection.getRangeAt(0).cloneRange() : null,
+      range:
+        selected && selection?.rangeCount
+          ? selection.getRangeAt(0).cloneRange()
+          : null,
     };
   }
 
@@ -146,7 +163,8 @@ export function insert(target: Target, text: string): InsertResult {
   // Deprecated and on its way out, so its absence is a supported case rather
   // than a crash: the fallback below still works, it just loses undo.
   const insertedNatively =
-    typeof document.execCommand === "function" && document.execCommand("insertText", false, text);
+    typeof document.execCommand === "function" &&
+    document.execCommand("insertText", false, text);
   if (insertedNatively) return { ok: true, undoLost: false };
 
   // Fallback for fields that block execCommand: set the value natively and fire
@@ -154,7 +172,9 @@ export function insert(target: Target, text: string): InsertResult {
   if (target.contentEditable) return { ok: false, undoLost: false };
   const input = el as HTMLInputElement | HTMLTextAreaElement;
   const proto =
-    input.tagName === "TEXTAREA" ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+    input.tagName === "TEXTAREA"
+      ? HTMLTextAreaElement.prototype
+      : HTMLInputElement.prototype;
   // Reaching for the prototype setter is the point: assigning `.value` directly
   // is swallowed by frameworks that track the property themselves.
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -162,7 +182,10 @@ export function insert(target: Target, text: string): InsertResult {
   if (!setter) return { ok: false, undoLost: false };
 
   const before = input.value;
-  setter.call(input, before.slice(0, target.start) + text + before.slice(target.end));
+  setter.call(
+    input,
+    before.slice(0, target.start) + text + before.slice(target.end),
+  );
   input.dispatchEvent(new Event("input", { bubbles: true }));
   input.dispatchEvent(new Event("change", { bubbles: true }));
   return { ok: true, undoLost: true };

@@ -30,9 +30,18 @@ test("English is English regardless of region", () => {
 });
 
 test("a low-confidence guess is not treated as a detection", () => {
-  assert.equal(languageIsCertain({ code: "cy", name: "Welsh", confidence: 0.2 }), false);
-  assert.equal(languageIsCertain({ code: "cy", name: "Welsh", confidence: 0.9 }), true);
-  assert.equal(languageIsCertain({ code: "cy", name: "Welsh", confidence: null }), true);
+  assert.equal(
+    languageIsCertain({ code: "cy", name: "Welsh", confidence: 0.2 }),
+    false,
+  );
+  assert.equal(
+    languageIsCertain({ code: "cy", name: "Welsh", confidence: 0.9 }),
+    true,
+  );
+  assert.equal(
+    languageIsCertain({ code: "cy", name: "Welsh", confidence: null }),
+    true,
+  );
   assert.equal(languageIsCertain(null), false);
 });
 
@@ -40,7 +49,10 @@ test("presetApplies hides nothing when the language is unknown or uncertain", ()
   const englishOnly = { englishOnly: true };
   assert.equal(presetApplies(englishOnly, null), true);
   // "lgtm, fix later" comes back as something exotic with low confidence
-  assert.equal(presetApplies(englishOnly, { code: "cy", name: "Welsh", confidence: 0.15 }), true);
+  assert.equal(
+    presetApplies(englishOnly, { code: "cy", name: "Welsh", confidence: 0.15 }),
+    true,
+  );
 });
 
 test("presetApplies gates on a confident detection", () => {
@@ -72,7 +84,10 @@ test("the character fallback guards every executor, not just the prompt path", (
 test("stored presets are treated as untrusted input", () => {
   assert.equal(normalizeCustomPreset(null), null);
   assert.equal(normalizeCustomPreset({ id: "a", label: "  " }), null);
-  assert.equal(normalizeCustomPreset({ id: "a", label: "x", instruction: "" }), null);
+  assert.equal(
+    normalizeCustomPreset({ id: "a", label: "x", instruction: "" }),
+    null,
+  );
 
   const clipped = normalizeCustomPreset({
     id: "a1",

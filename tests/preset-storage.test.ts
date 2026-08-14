@@ -48,7 +48,10 @@ test("corrupt entries are dropped rather than crashing the panel", () => {
 
 test("the stored count is capped", () => {
   const many = Object.fromEntries(
-    Array.from({ length: CUSTOM_LIMIT + 5 }, (_, i) => [storageKey(`p${i}`), preset(`p${i}`, i)]),
+    Array.from({ length: CUSTOM_LIMIT + 5 }, (_, i) => [
+      storageKey(`p${i}`),
+      preset(`p${i}`, i),
+    ]),
   );
   assert.equal(presetsFromStorage(many).length, CUSTOM_LIMIT);
 });

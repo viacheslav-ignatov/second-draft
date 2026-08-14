@@ -18,7 +18,8 @@ interface LanguageModelApi {
   create(options: unknown): Promise<PromptSession>;
 }
 
-const $ = <T extends HTMLElement>(id: string): T => document.getElementById(id) as T;
+const $ = <T extends HTMLElement>(id: string): T =>
+  document.getElementById(id) as T;
 
 localizeDocument();
 
@@ -70,10 +71,16 @@ $("download").addEventListener("click", () => {
       const session = await api.create({
         monitor(monitor: EventTarget) {
           monitor.addEventListener("downloadprogress", (event) => {
-            const progress = event as Event & { loaded: number; total?: number };
-            const ratio = progress.total ? progress.loaded / progress.total : progress.loaded;
+            const progress = event as Event & {
+              loaded: number;
+              total?: number;
+            };
+            const ratio = progress.total
+              ? progress.loaded / progress.total
+              : progress.loaded;
             const pct = Number.isFinite(ratio) ? Math.round(ratio * 100) : null;
-            if (pct !== null) $("detail").textContent = t("popupProgress", [String(pct)]);
+            if (pct !== null)
+              $("detail").textContent = t("popupProgress", [String(pct)]);
           });
         },
       });
@@ -108,7 +115,10 @@ void (async () => {
   // here: `??` would render an empty box.
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   kbd.textContent = shortcut || t("popupNoShortcut");
-  $("shortcut").replaceChildren(document.createTextNode(`${t("popupShortcutPrefix")} `), kbd);
+  $("shortcut").replaceChildren(
+    document.createTextNode(`${t("popupShortcutPrefix")} `),
+    kbd,
+  );
 
   // Ask the worker rather than reading the global here: the two can disagree
   // while a download is in flight, and the worker runs the rewrite.

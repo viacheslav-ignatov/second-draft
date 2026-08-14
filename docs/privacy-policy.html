@@ -61,59 +61,74 @@
 
     <h2>Short version</h2>
     <p>
-      The extension sends nothing anywhere. It cannot: it declares no host permissions, so Chrome
-      would block a network request even if one were attempted.
+      The extension sends nothing anywhere. It cannot: it declares no host
+      permissions, so Chrome would block a network request even if one were
+      attempted.
     </p>
 
     <h2>What the extension reads</h2>
     <p>
-      When you invoke it — by pressing the keyboard shortcut or choosing Second Draft from the
-      right-click menu — it reads the text in the field you are editing, or your selection within
-      that field. It reads nothing else on the page, and it reads nothing at all until you invoke
-      it.
+      When you invoke it — by pressing the keyboard shortcut or choosing Second
+      Draft from the right-click menu — it reads the text in the field you are
+      editing, or your selection within that field. It reads nothing else on the
+      page, and it reads nothing at all until you invoke it.
     </p>
 
     <h2>What it does with that text</h2>
     <p>
-      The text is passed to Chrome's built-in on-device model, which runs locally on your computer
-      as part of the browser. The rewritten result is shown to you and is inserted into the field
-      only if you press Insert.
+      The text is passed to Chrome's built-in on-device model, which runs
+      locally on your computer as part of the browser. The rewritten result is
+      shown to you and is inserted into the field only if you press Insert.
     </p>
 
     <h2>What it stores</h2>
     <p>
       Only the rewrite presets you create yourself on the options page, in
-      <code>chrome.storage.sync</code> — Chrome's own storage, synced across your Chrome profile if
-      you have sync enabled. The extension does not store the text you rewrite, the drafts it
-      produces, or any history of your use.
+      <code>chrome.storage.sync</code> — Chrome's own storage, synced across
+      your Chrome profile if you have sync enabled. The extension does not store
+      the text you rewrite, the drafts it produces, or any history of your use.
     </p>
 
     <h2>What it transmits</h2>
     <p>
-      Nothing. There are no servers, no analytics, no error reporting, no advertising, no
-      third-party services.
+      Nothing. There are no servers, no analytics, no error reporting, no
+      advertising, no third-party services.
     </p>
 
     <h2>Permissions</h2>
     <ul>
-      <li><code>contextMenus</code> — adds the right-click entry point on editable fields.</li>
       <li>
-        <code>activeTab</code> — access to the current tab, granted by Chrome only at the moment you
-        invoke the extension, and only for that tab.
+        <code>contextMenus</code> — adds the right-click entry point on editable
+        fields.
       </li>
-      <li><code>scripting</code> — injects the panel into the tab you invoked the extension on.</li>
+      <li>
+        <code>activeTab</code> — access to the current tab, granted by Chrome
+        only at the moment you invoke the extension, and only for that tab.
+      </li>
+      <li>
+        <code>scripting</code> — injects the panel into the tab you invoked the
+        extension on.
+      </li>
       <li><code>storage</code> — your own presets, as described above.</li>
     </ul>
 
     <h2>Children</h2>
-    <p>The extension is not directed at children and collects no data from anyone.</p>
+    <p>
+      The extension is not directed at children and collects no data from
+      anyone.
+    </p>
 
     <h2>Changes</h2>
     <p>
-      Any change to this policy will appear here, and its full history is public in the repository.
+      Any change to this policy will appear here, and its full history is public
+      in the repository.
     </p>
 
     <h2>Contact</h2>
-    <p><a href="https://github.com/USERNAME/second-draft/issues">Open an issue on GitHub</a>.</p>
+    <p>
+      <a href="https://github.com/USERNAME/second-draft/issues"
+        >Open an issue on GitHub</a
+      >.
+    </p>
   </body>
 </html>

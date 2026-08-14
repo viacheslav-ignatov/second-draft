@@ -17,7 +17,9 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const out = join(root, "dist");
 const watch = process.argv.includes("--watch");
 
-const manifest = JSON.parse(await readFile(join(root, "src/static/manifest.json"), "utf8"));
+const manifest = JSON.parse(
+  await readFile(join(root, "src/static/manifest.json"), "utf8"),
+);
 
 /**
  * The service worker is a module, so it can be split across files. The content

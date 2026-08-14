@@ -81,7 +81,8 @@ function main(): void {
     onWarm: (state) => {
       if (current) return;
       if (state === "ready") panel.setStatus(t("statusReady"));
-      else if (state === "downloadable") panel.setStatus(t("statusNeedsDownload"), true);
+      else if (state === "downloadable")
+        panel.setStatus(t("statusNeedsDownload"), true);
       else panel.setStatus(t("errUnavailable"), true);
     },
   });
@@ -122,8 +123,13 @@ function main(): void {
       panel.setLanguage("");
       return;
     }
-    const pct = language.confidence == null ? "" : ` (${Math.round(language.confidence * 100)}%)`;
-    panel.setLanguage(t("langDetected", [language.name ?? language.code]) + pct);
+    const pct =
+      language.confidence == null
+        ? ""
+        : ` (${Math.round(language.confidence * 100)}%)`;
+    panel.setLanguage(
+      t("langDetected", [language.name ?? language.code]) + pct,
+    );
   }
 
   async function loadPresets(): Promise<void> {
@@ -133,7 +139,11 @@ function main(): void {
 
   // Editing presets in the options page must not require reloading every tab.
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area !== "sync" || !Object.keys(changes).some((key) => key.startsWith("preset:"))) return;
+    if (
+      area !== "sync" ||
+      !Object.keys(changes).some((key) => key.startsWith("preset:"))
+    )
+      return;
     presets = [];
     void loadPresets().then(renderChips);
   });
@@ -151,7 +161,10 @@ function main(): void {
     await loadPresets();
     renderChips();
 
-    panel.setOriginal(target.text, t(target.wholeField ? "srcWholeField" : "srcSelection"));
+    panel.setOriginal(
+      target.text,
+      t(target.wholeField ? "srcWholeField" : "srcSelection"),
+    );
     panel.setDraft("");
     panel.setBusy(true);
     panel.setStatus(t("statusCheckingLanguage"));
@@ -188,7 +201,10 @@ function main(): void {
     renderChips();
     renderLanguage();
 
-    panel.setOriginal(target.text, t(target.wholeField ? "srcWholeField" : "srcSelection"));
+    panel.setOriginal(
+      target.text,
+      t(target.wholeField ? "srcWholeField" : "srcSelection"),
+    );
     panel.setDraft("");
     panel.setBusy(true);
     panel.setStatus(t("statusPickPreset"));
