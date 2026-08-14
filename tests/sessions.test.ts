@@ -168,6 +168,103 @@ test("a factory that throws is not cached", async () => {
   assert.equal(attempts, 2);
 });
 
+/** A session that records being destroyed, which is what eviction must do. */
+function destroyable(name: string, destroyed: string[]) {
+  return () => Promise.resolve({ name, destroy: () => destroyed.push(name) });
+}
+
+/** Mirrors MAX_SESSIONS, which the module keeps to itself. */
+const MAX_SESSIONS = 4;
+
+/** `release()` is deliberately not awaited, so let its microtasks run. */
+const flush = () => new Promise((resolve) => setImmediate(resolve));
+
+test("the cache is bounded, and the oldest session is released", async () => {
+  installChrome();
+  const destroyed: string[] = [];
+
+  for (let n = 1; n <= MAX_SESSIONS; n += 1) {
+    await warmCache(`s${n}`, destroyable(`s${n}`, destroyed));
+  }
+  assert.deepEqual(destroyed, [], "still within budget");
+
+  await warmCache("s5", destroyable("s5", destroyed));
+  await flush();
+
+  assert.deepEqual(
+    destroyed,
+    ["s1"],
+    "one over budget drops exactly one, and hands the model back",
+  );
+
+  // The survivors are still cached: asking again must not rebuild them.
+  let rebuilt = 0;
+  for (const key of ["s2", "s3", "s4", "s5"]) {
+    await warmCache(key, () => {
+      rebuilt += 1;
+      return Promise.resolve({ name: key });
+    });
+  }
+  assert.equal(rebuilt, 0, "eviction took one, not the whole cache");
+});
+
+test("using a session makes it recent, not just adding one", async () => {
+  installChrome();
+  const destroyed: string[] = [];
+
+  for (let n = 1; n <= MAX_SESSIONS; n += 1) {
+    await warmCache(`s${n}`, destroyable(`s${n}`, destroyed));
+  }
+
+  // Touching the oldest should move it to the back of the queue — otherwise
+  // this is a FIFO wearing an LRU's name, and the session in constant use is
+  // exactly the one that keeps getting thrown away.
+  await warmCache("s1", destroyable("s1", destroyed));
+
+  await warmCache("s5", destroyable("s5", destroyed));
+  await flush();
+
+  assert.deepEqual(destroyed, ["s2"], "s1 was spared, s2 was next in line");
+});
+
+test("a session in use is never the one evicted", async (t) => {
+  installChrome();
+  const destroyed: string[] = [];
+
+  // s1 is the oldest and would be first out, but it is mid-generation.
+  let finish!: () => void;
+  const running = new Promise<void>((resolve) => (finish = resolve));
+  const inFlight = useSession(
+    "s1",
+    destroyable("s1", destroyed),
+    async () => {
+      await running;
+      return "done";
+    },
+    () => undefined,
+  );
+  await flush();
+
+  for (let n = 2; n <= MAX_SESSIONS + 1; n += 1) {
+    await warmCache(`s${n}`, destroyable(`s${n}`, destroyed));
+  }
+  await flush();
+
+  assert.deepEqual(
+    destroyed,
+    ["s2"],
+    "the busy session was skipped and the next oldest taken instead",
+  );
+
+  finish();
+  assert.equal(await inFlight, "done", "and the generation finished normally");
+
+  t.diagnostic("eviction resumes once the pin is released");
+  await warmCache("s6", destroyable("s6", destroyed));
+  await flush();
+  assert.ok(destroyed.includes("s1"), "s1 is fair game again");
+});
+
 test("the loaded prompt session is the one the limit check measures against", async () => {
   installChrome();
 

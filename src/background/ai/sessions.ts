@@ -58,17 +58,76 @@ export function downloadMonitor(
   };
 }
 
-/** Loaded sessions, alive for as long as this service worker is. */
+/**
+ * How many loaded sessions to keep.
+ *
+ * One rewrite touches at most three: the detector, the prompt session used to
+ * measure input size, and one of translator/proofreader/rewriter. The fourth is
+ * headroom for the user changing their mind. Past that, an old translation pair
+ * is holding model memory for a language they have moved on from.
+ */
+const MAX_SESSIONS = 4;
+
+/**
+ * Loaded sessions, most recently used last.
+ *
+ * A `Map` iterates in insertion order, so re-inserting on a hit is what turns
+ * "the first key" into "the least recently used one".
+ */
 const sessions = new Map<string, Promise<unknown>>();
+
+/**
+ * Keys with work in flight, counted rather than flagged: two tabs run two ports,
+ * and both reach for the same prompt session. Evicting one of these would
+ * destroy a session mid-generation, which is worse than holding a spare.
+ */
+const inUse = new Map<string, number>();
+
+function pin(key: string): void {
+  inUse.set(key, (inUse.get(key) ?? 0) + 1);
+}
+
+function unpin(key: string): void {
+  const left = (inUse.get(key) ?? 0) - 1;
+  if (left > 0) inUse.set(key, left);
+  else inUse.delete(key);
+}
+
+/** Nothing waits on this: the handle may already be dead, and that is fine. */
+async function release(session: Promise<unknown>): Promise<void> {
+  try {
+    const loaded = (await session) as { destroy?: () => void } | null;
+    loaded?.destroy?.();
+  } catch {
+    /* it never loaded, or Chrome took it back first */
+  }
+}
+
+/** Drops least-recently-used entries until the cache is back within budget. */
+function evict(): void {
+  for (const key of [...sessions.keys()]) {
+    if (sessions.size <= MAX_SESSIONS) return;
+    // Busy: skip it and look further up the queue rather than wait.
+    if (inUse.has(key)) continue;
+    const evicted = sessions.get(key);
+    sessions.delete(key);
+    if (evicted) void release(evicted);
+  }
+}
 
 function cached<T>(key: string, factory: () => Promise<T>): Promise<T> {
   const existing = sessions.get(key) as Promise<T> | undefined;
-  if (existing) return existing;
+  if (existing) {
+    sessions.delete(key);
+    sessions.set(key, existing);
+    return existing;
+  }
   const promise = factory().catch((error: unknown) => {
     sessions.delete(key);
     throw error;
   });
   sessions.set(key, promise);
+  evict();
   return promise;
 }
 
@@ -92,6 +151,7 @@ export function warmCache<T>(
  */
 export function resetSessions(): void {
   sessions.clear();
+  inUse.clear();
 }
 
 /**
@@ -104,17 +164,24 @@ export async function useSession<T, R>(
   use: (session: T) => Promise<R>,
   post: Post,
 ): Promise<R> {
-  let session = await cached(key, factory);
+  // Held for the whole call, including the rebuild below, so nothing evicts the
+  // session out from under a generation that is still streaming.
+  pin(key);
   try {
-    return await use(session);
-  } catch (error) {
-    if (isAbortError(error) || !isDeadSession(error)) throw error;
-    console.warn("[second-draft] session was destroyed, recreating", error);
-    sessions.delete(key);
-    post({ type: "chunk", text: "" }); // discard partial output from the dead run
-    post({ type: "status", text: t("statusReloading") });
-    session = await cached(key, factory);
-    return use(session);
+    let session = await cached(key, factory);
+    try {
+      return await use(session);
+    } catch (error) {
+      if (isAbortError(error) || !isDeadSession(error)) throw error;
+      console.warn("[second-draft] session was destroyed, recreating", error);
+      sessions.delete(key);
+      post({ type: "chunk", text: "" }); // discard partial output from the dead run
+      post({ type: "status", text: t("statusReloading") });
+      session = await cached(key, factory);
+      return await use(session);
+    }
+  } finally {
+    unpin(key);
   }
 }
 
