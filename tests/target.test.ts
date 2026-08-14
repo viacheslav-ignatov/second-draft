@@ -200,6 +200,116 @@ test("a field edited during generation is left alone", async () => {
   );
 });
 
+test("a contentEditable edited during generation is left alone", async () => {
+  const { document, target } = await withDom(
+    `<div id="rich" contenteditable="true">keep this part</div>`,
+  );
+  const rich = el(document, "rich");
+  rich.focus();
+
+  const captured = target.capture();
+  assert.ok(captured);
+  assert.equal(captured.contentEditable, true);
+  assert.equal(captured.wholeField, true, "no selection: the whole field");
+
+  // The user kept typing while the model was thinking. Without the check this
+  // path selects the whole field and replaces it, taking the new text with it.
+  rich.innerHTML = "I changed my mind and typed something else";
+
+  const result = target.insert(captured, "that");
+
+  assert.equal(result.ok, false);
+  assert.equal(result.stale, true, "and says why, so the panel can explain");
+  assert.equal(
+    rich.innerText,
+    "I changed my mind and typed something else",
+    "what the user typed is untouched",
+  );
+});
+
+test("a re-rendered editor is caught even when the text is identical", async () => {
+  const { document, target } = await withDom(
+    `<div id="rich" contenteditable="true"><p id="para">hello there</p></div>`,
+  );
+  const rich = el(document, "rich");
+  const para = el(document, "para");
+  rich.focus();
+
+  // Select inside the field, so the capture stores a range rather than falling
+  // back to "the whole field".
+  const range = document.createRange();
+  range.selectNodeContents(para);
+  const selection = window.getSelection();
+  selection?.removeAllRanges();
+  selection?.addRange(range);
+
+  const captured = target.capture();
+  assert.ok(captured?.range, "a selection was captured as a range");
+
+  // React and friends rebuild the subtree on every keystroke: same text, new
+  // nodes. The snapshot cannot see this — only the range can.
+  const replacement = para.cloneNode(true);
+  para.remove();
+  rich.appendChild(replacement);
+  assert.equal(rich.innerText, "hello there", "the text really is unchanged");
+
+  const result = target.insert(captured, "goodbye");
+
+  assert.equal(result.ok, false);
+  assert.equal(
+    result.stale,
+    true,
+    "a range into discarded nodes would have inserted at the caret instead",
+  );
+});
+
+test("a selection the browser refuses does not escape the click handler", async () => {
+  const { document, target } = await withDom(
+    `<div id="rich" contenteditable="true">unchanged text</div>`,
+  );
+  const rich = el(document, "rich");
+  rich.focus();
+
+  const captured = target.capture();
+  assert.ok(captured);
+
+  // Chrome throws from `addRange` for a range whose nodes have gone; happy-dom
+  // is more forgiving, so the throw is staged. What matters is that `insert`
+  // returns a result instead of letting the exception out of the panel's click
+  // handler, where nothing would catch it and the press would look ignored.
+  const stub = globalThis as unknown as { window: { getSelection: unknown } };
+  stub.window.getSelection = () => ({
+    removeAllRanges: () => undefined,
+    addRange: () => {
+      throw new Error("IndexSizeError: the range is not in the document");
+    },
+  });
+
+  const result = target.insert(captured, "something");
+
+  assert.equal(result.ok, false);
+  assert.equal(result.stale, true);
+});
+
+test("an untouched contentEditable is not refused as stale", async () => {
+  const { document, target } = await withDom(
+    `<div id="rich" contenteditable="true">leave this alone</div>`,
+  );
+  const rich = el(document, "rich");
+  rich.focus();
+
+  const captured = target.capture();
+  assert.ok(captured);
+
+  // happy-dom has no execCommand, so this still fails — but on the insertion
+  // itself, not on the staleness check. The flag is what tells them apart, and
+  // it is what picks the message the user reads.
+  const result = target.insert(captured, "something");
+
+  assert.equal(result.ok, false);
+  assert.notEqual(result.stale, true);
+});
+
 test("inserting into a field that has left the DOM fails cleanly", async () => {
   const { document, target } = await withDom(`<textarea id="t"></textarea>`);
   const textarea = el<HTMLTextAreaElement>(document, "t");

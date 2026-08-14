@@ -23,11 +23,12 @@ export interface Target {
   start?: number;
   end?: number;
   /**
-   * The field's whole value at capture time, for text inputs.
+   * Everything the field held at capture time.
    *
-   * `start`/`end` are offsets into *that* string. Generation takes seconds and
-   * the panel does not lock the page, so by the time the user presses Insert the
-   * field may have been typed into and the offsets now point somewhere else.
+   * `start`/`end` are offsets into *that* string, and `range` points at the
+   * nodes that made it up. Generation takes seconds and the panel does not lock
+   * the page, so by the time the user presses Insert the field may have been
+   * typed into — in which case both would cut the wrong thing.
    */
   snapshot?: string;
 }
@@ -123,15 +124,17 @@ export function capture(selectionText = ""): Target | null {
       selection && !selection.isCollapsed
         ? selection.toString()
         : selectionText;
+    const whole = el.innerText;
     return {
       el,
       contentEditable: true,
-      text: selected || el.innerText,
+      text: selected || whole,
       wholeField: !selected,
       range:
         selected && selection?.rangeCount
           ? selection.getRangeAt(0).cloneRange()
           : null,
+      snapshot: whole,
     };
   }
 
@@ -157,16 +160,40 @@ export interface InsertResult {
   stale?: boolean;
 }
 
+/** What the field holds right now, in the same terms as `Target.snapshot`. */
+function currentText(target: Target): string {
+  return target.contentEditable
+    ? target.el.innerText
+    : (target.el as HTMLInputElement).value;
+}
+
+/**
+ * Whether a captured range still points inside the field it was taken from.
+ *
+ * `isConnected` alone would not do: a node can be moved out of the field and
+ * still be somewhere in the document, and inserting into it would write into
+ * whatever it was moved to.
+ */
+function rangeIsLive(range: Range, root: HTMLElement): boolean {
+  return (
+    range.startContainer.isConnected &&
+    range.endContainer.isConnected &&
+    root.contains(range.startContainer) &&
+    root.contains(range.endContainer)
+  );
+}
+
 export function insert(target: Target, text: string): InsertResult {
   if (!target.el.isConnected) return { ok: false, undoLost: false };
 
-  // Refuse rather than write to offsets that have gone stale: both paths below
-  // splice by `start`/`end`, so on a changed field they would cut the wrong
-  // range and take whatever the user typed in the meantime with them.
+  // Refuse rather than write into a field that has moved on. Both paths below
+  // replace a range captured before the generation started, so on a changed
+  // field they would cut the wrong thing and take whatever the user typed in
+  // the meantime with them. A false refusal costs a click on Copy; a false
+  // acceptance costs their words.
   if (
-    !target.contentEditable &&
     target.snapshot !== undefined &&
-    (target.el as HTMLInputElement).value !== target.snapshot
+    currentText(target) !== target.snapshot
   ) {
     return { ok: false, undoLost: false, stale: true };
   }
@@ -175,14 +202,33 @@ export function insert(target: Target, text: string): InsertResult {
   el.focus();
 
   if (target.contentEditable) {
+    // An editor that re-renders — React and friends do it on every keystroke —
+    // swaps the nodes while the text stays identical, which the snapshot above
+    // cannot see. A range into the discarded nodes selects nothing, so the
+    // insertion would land wherever the caret happens to be sitting.
+    if (target.range && !rangeIsLive(target.range, el)) {
+      return { ok: false, undoLost: false, stale: true };
+    }
+
     const selection = window.getSelection();
-    selection?.removeAllRanges();
-    if (target.range) {
-      selection?.addRange(target.range);
-    } else {
-      const range = document.createRange();
-      range.selectNodeContents(el);
-      selection?.addRange(range);
+    try {
+      selection?.removeAllRanges();
+      if (target.range) {
+        selection?.addRange(target.range);
+      } else {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        selection?.addRange(range);
+      }
+    } catch (error) {
+      // Chrome throws on a range whose nodes are gone. Reached only for what
+      // the check above misses, but an exception here would escape the click
+      // handler and leave the panel looking like it ignored the press.
+      console.warn(
+        "[second-draft] captured selection is no longer valid",
+        error,
+      );
+      return { ok: false, undoLost: false, stale: true };
     }
   } else {
     (el as HTMLInputElement).setSelectionRange(target.start!, target.end!);
