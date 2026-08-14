@@ -23,13 +23,8 @@ is unnecessary.
 Second Draft never overwrites what you wrote. The rewrite appears next to the
 original in an editable box and goes into the field only when you press Insert.
 
-<!--
-  The screenshot goes here. Uncomment once docs/screenshots/panel.png exists —
-  see docs/screenshots/README.md for the shot list. Left commented rather than
-  embedded, because a broken image is worse than no image.
-
-  ![The panel rewriting a review comment](docs/screenshots/panel.png)
--->
+![The panel open beside a code-review comment box, showing the original text and
+a softened rewrite ready to insert](docs/screenshots/panel.png)
 
 ## Install
 
