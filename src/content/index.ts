@@ -11,14 +11,7 @@ import type { TabMessage } from "../shared/messages.ts";
 import { WorkerClient } from "./client.ts";
 import { createController } from "./controller.ts";
 import { Panel } from "./panel.ts";
-import {
-  capture,
-  claimedByMenu,
-  field,
-  insert,
-  ownsFocus,
-  trackFocus,
-} from "./target.ts";
+import { capture, field, insert, ownsFocus, trackFocus } from "./target.ts";
 
 declare global {
   interface Window {
@@ -43,7 +36,6 @@ function main(): void {
     insert,
     field,
     ownsFocus,
-    claimedByMenu,
     loadPresets: async () =>
       (await chrome.runtime.sendMessage({ type: "GET_PRESETS" })) ?? [],
     copyText: (text) => navigator.clipboard.writeText(text),

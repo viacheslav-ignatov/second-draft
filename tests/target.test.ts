@@ -43,6 +43,18 @@ async function withDom(html: string) {
   };
 }
 
+/**
+ * Identity rather than equality.
+ *
+ * `assert.equal` builds a diff of both values when it fails, and a happy-dom
+ * node expands into a tree big enough to take the whole process out with it —
+ * the run dies on SIGKILL instead of naming the test that broke. Comparing
+ * first and asserting a boolean keeps a failure reportable.
+ */
+function isNode(actual: unknown, expected: unknown, message: string): void {
+  assert.ok(actual === expected, message);
+}
+
 /** Typed lookup, since every case knows what element it just wrote. */
 function el<T extends HTMLElement>(document: Document, id: string): T {
   const found = document.getElementById(id);
@@ -109,20 +121,27 @@ test("the last edited field is remembered after focus moves away", async () => {
   el(document, "b").focus();
 
   // This is the context-menu case: focus has moved, the field has not.
-  assert.equal(target.field(), textarea);
+  isNode(
+    target.field(),
+    textarea,
+    "the last edited field, not the focused one",
+  );
   assert.equal(target.capture()?.text, "typed earlier");
 });
 
-test("a frame only claims a menu invocation if it saw the right-click", async () => {
+test("a right-clicked field is remembered without ever being focused", async () => {
   const { document, target } = await withDom(`<textarea id="t"></textarea>`);
   target.trackFocus();
-  assert.equal(target.claimedByMenu(), false, "no right-click yet");
+  isNode(target.field(), null, "nothing pointed at yet");
 
   const textarea = document.getElementById("t") as unknown as HTMLElement;
+  // Deliberately no focus() call: a right-click does not reliably leave focus
+  // behind, and by the time the menu item is clicked `activeElement` is no help
+  // either. This listener is the only thing that knows what the user aimed at.
   // happy-dom's Event is structurally close enough for the listener under test.
   textarea.dispatchEvent(new Event("contextmenu", { bubbles: true }));
 
-  assert.equal(target.claimedByMenu(), true);
+  isNode(target.field(), textarea, "the field the user pointed at");
 });
 
 test("a parent document does not claim focus while an iframe holds it", async () => {

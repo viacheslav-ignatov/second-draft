@@ -54,7 +54,6 @@ export function isEditable(el: Element | null | undefined): el is HTMLElement {
 }
 
 let lastEditable: HTMLElement | null = null;
-let lastMenuAt = 0;
 
 /** Call once per frame. Cheap listeners, capture phase, never removed. */
 export function trackFocus(): void {
@@ -67,33 +66,18 @@ export function trackFocus(): void {
     true,
   );
 
-  // Only the frame the user right-clicked in receives this, which is a far more
-  // reliable claim than focus once the menu has been open.
+  // A right-click does not always leave focus behind, and `activeElement` is
+  // unreliable by the time a menu item is clicked — so the field is recorded
+  // here, at the moment the user points at it.
   document.addEventListener(
     "contextmenu",
     (event) => {
       const el = (event.composedPath?.()[0] ?? event.target) as Element;
-      if (isEditable(el)) {
-        lastEditable = el;
-        lastMenuAt = Date.now();
-      }
+      if (isEditable(el)) lastEditable = el;
     },
     true,
   );
 }
-
-/**
- * The gap between the right-click and the menu message arriving, plus slack.
- * It used to be a minute, which was cover for the broadcast: any frame that had
- * seen a right-click in the last minute would answer, and two could answer at
- * once. The menu path is addressed by `frameId` now, so this only has to outlast
- * the click itself.
- */
-const MENU_CLAIM_WINDOW_MS = 5_000;
-
-/** Whether this frame was the one the user just right-clicked in. */
-export const claimedByMenu = (): boolean =>
-  Date.now() - lastMenuAt < MENU_CLAIM_WINDOW_MS;
 
 /**
  * In a parent document, `activeElement` is the `<iframe>` element while a child

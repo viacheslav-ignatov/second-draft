@@ -63,7 +63,6 @@ export interface ControllerDeps {
   insert(target: Target, text: string): InsertResult;
   field(): HTMLElement | null;
   ownsFocus(): boolean;
-  claimedByMenu(): boolean;
 
   /** Asks the worker for the preset list. */
   loadPresets(): Promise<PresetSummary[]>;
@@ -281,18 +280,21 @@ export function createController(deps: ControllerDeps): Controller {
 
   return {
     async handleMessage(message: TabMessage): Promise<void> {
-      // The keyboard command is broadcast to every frame, so each has to decide
-      // whether the user is here. The menu path is addressed by `frameId` and
-      // arrives only here, but still has to survive the focus check because a
-      // right-click does not always leave focus behind.
+      // Either way, this frame needs something to rewrite.
       if (!deps.field()) return;
 
       if (message?.type === "REWRITE_WITH") {
-        if (!deps.claimedByMenu() && !deps.ownsFocus()) return;
+        // No focus check here on purpose. Chrome knows which frame was
+        // right-clicked and `dispatchToTab` addresses that one, so a second
+        // opinion can only overrule a correct delivery — and it would, because
+        // a right-click does not reliably leave focus behind.
         target = deps.capture(message.selectionText);
         client.reset();
         await run(message.presetId);
       } else if (message?.type === "SHOW_PICKER") {
+        // The keyboard command has no frame to aim at, so it is broadcast and
+        // the frames settle it between themselves: only the one holding focus
+        // answers.
         if (!deps.ownsFocus()) return;
         await showPicker();
       }

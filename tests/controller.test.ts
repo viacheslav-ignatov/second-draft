@@ -69,7 +69,6 @@ interface HarnessOptions {
   insertResult?: InsertResult;
   field?: () => HTMLElement | null;
   ownsFocus?: boolean;
-  claimedByMenu?: boolean;
   /**
    * Hold the detection open so a case can decide when it answers. Off by
    * default: a case that does not care should not be able to hang the file if
@@ -147,7 +146,6 @@ function harness(options: HarnessOptions = {}) {
     },
     field: options.field ?? (() => ({}) as HTMLElement),
     ownsFocus: () => options.ownsFocus ?? true,
-    claimedByMenu: () => options.claimedByMenu ?? false,
 
     loadPresets: () => Promise.resolve(options.presets ?? [preset("shorter")]),
     copyText: () => Promise.resolve(),
@@ -322,26 +320,19 @@ test("a frame with no editable field answers nothing", async () => {
   assert.deepEqual(h.runs, []);
 });
 
-test("the menu claim stands in for focus, the keyboard command does not", async () => {
-  const unfocused = harness({ ownsFocus: false, claimedByMenu: false });
-  await unfocused.controller.handleMessage(rewrite("shorter"));
-  assert.deepEqual(unfocused.runs, [], "no claim on this frame at all");
-
-  const clicked = harness({ ownsFocus: false, claimedByMenu: true });
+test("a menu click is trusted; the keyboard command still needs focus", async () => {
+  // Chrome addressed the menu message at this frame, so second-guessing it can
+  // only refuse a correct delivery — and a right-click does not reliably leave
+  // focus behind, so the refusal would be routine rather than theoretical.
+  const clicked = harness({ ownsFocus: false });
   await clicked.controller.handleMessage(rewrite("shorter"));
-  assert.deepEqual(
-    clicked.runs,
-    [["shorter", "some text"]],
-    "a right-click here is a stronger claim than focus",
-  );
+  assert.deepEqual(clicked.runs, [["shorter", "some text"]]);
 
-  const picker = harness({ ownsFocus: false, claimedByMenu: true });
+  // The shortcut has no frame to aim at and reaches all of them, so here the
+  // check is the only thing keeping two frames from both answering.
+  const picker = harness({ ownsFocus: false });
   await picker.controller.handleMessage({ type: "SHOW_PICKER" });
-  assert.deepEqual(
-    picker.events,
-    [],
-    "but the keyboard command only answers where the focus is",
-  );
+  assert.deepEqual(picker.events, []);
 });
 
 test("an empty field opens nothing", async () => {
