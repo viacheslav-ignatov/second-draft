@@ -80,14 +80,6 @@ header b {
   cursor: default;
 }
 
-.chip:focus-visible,
-button.act:focus-visible,
-textarea:focus-visible,
-.close:focus-visible {
-  outline: 2px solid var(--sd-accent);
-  outline-offset: 1px;
-}
-
 .lang {
   margin-bottom: 6px;
   color: var(--sd-fg-muted);
@@ -184,4 +176,15 @@ button.act:disabled {
   .actions {
     flex-wrap: wrap;
   }
+}
+
+/* Last on purpose: the base `textarea` and `button.act` rules above are less
+   specific but come later in source order, so declared any earlier this block
+   would lose the cascade and the focus ring would never paint. */
+.chip:focus-visible,
+button.act:focus-visible,
+textarea:focus-visible,
+.close:focus-visible {
+  outline: 2px solid var(--sd-accent);
+  outline-offset: 1px;
 }
