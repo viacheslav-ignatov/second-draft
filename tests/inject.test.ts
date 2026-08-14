@@ -15,7 +15,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import { dispatchToTab } from "../src/background/inject.ts";
-import type { TabMessage } from "../src/shared/messages.ts";
+import type { TabMessage, TabMessageBody } from "../src/shared/messages.ts";
 import { clearGlobals, installChrome } from "./helpers/doubles.ts";
 
 interface Injection {
@@ -101,12 +101,18 @@ function installTabApis(options: StubOptions = {}): Log {
   return log;
 }
 
-const picker: TabMessage = { type: "SHOW_PICKER" };
-const rewrite: TabMessage = {
+const picker: TabMessageBody = { type: "SHOW_PICKER" };
+const rewrite: TabMessageBody = {
   type: "REWRITE_WITH",
   presetId: "shorter",
   selectionText: "some text",
 };
+
+/** The same rewrite as the content script receives it. */
+const delivered = (broadcast: boolean): TabMessage => ({
+  ...rewrite,
+  broadcast,
+});
 
 test.afterEach(() => {
   clearGlobals();
@@ -122,7 +128,7 @@ test("a frame id reaches exactly that frame", async () => {
   ]);
   assert.deepEqual(
     log.messages,
-    [{ tabId: 7, message: rewrite, options: { frameId: 3 } }],
+    [{ tabId: 7, message: delivered(false), options: { frameId: 3 } }],
     "the message is addressed too — injecting one frame and shouting at all of them would still open two panels",
   );
 });
@@ -150,6 +156,30 @@ test("without a frame id the message is broadcast", async () => {
     log.messages,
     [{ tabId: 7, message: picker, options: {} }],
     "the frames sort it out between themselves via ownsFocus()",
+  );
+});
+
+test("a rewrite carries how it was delivered", async () => {
+  const addressed = installTabApis();
+  await dispatchToTab(7, rewrite, 3);
+  assert.deepEqual(
+    addressed.messages[0]?.message,
+    delivered(false),
+    "aimed at a frame, so that frame should not second-guess it",
+  );
+
+  clearGlobals();
+
+  // Chrome omits `frameId` only when it could not identify the frame at all.
+  // The message then goes to every frame, and it has to say so — otherwise
+  // every frame with a field would open a panel.
+  const shouted = installTabApis();
+  await dispatchToTab(7, rewrite);
+  assert.deepEqual(shouted.messages[0]?.message, delivered(true));
+  assert.deepEqual(
+    shouted.scripts[0]?.target,
+    { tabId: 7, allFrames: true },
+    "and the panel is injected everywhere it might be needed",
   );
 });
 

@@ -8,7 +8,7 @@
  * the extension still works on every site.
  */
 
-import type { TabMessage } from "../shared/messages.ts";
+import type { TabMessage, TabMessageBody } from "../shared/messages.ts";
 
 /** The tab may close mid-call; there is nothing to do about it. */
 const noop = (): void => undefined;
@@ -59,7 +59,7 @@ async function flagUninjectable(tabId: number): Promise<void> {
  */
 export async function dispatchToTab(
   tabId: number,
-  message: TabMessage,
+  message: TabMessageBody,
   frameId?: number,
 ): Promise<void> {
   try {
@@ -68,7 +68,16 @@ export async function dispatchToTab(
     console.warn("[second-draft] injection refused", error);
     return flagUninjectable(tabId);
   }
+
+  // Stamped here rather than by the caller: this is the only place that knows
+  // whether the message could be aimed at a frame, and the receiving frame has
+  // to know, because a broadcast is the one case where it must check focus.
+  const delivered: TabMessage =
+    message.type === "REWRITE_WITH"
+      ? { ...message, broadcast: frameId === undefined }
+      : message;
+
   await chrome.tabs
-    .sendMessage(tabId, message, frameId === undefined ? {} : { frameId })
+    .sendMessage(tabId, delivered, frameId === undefined ? {} : { frameId })
     .catch(noop);
 }

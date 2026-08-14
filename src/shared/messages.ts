@@ -137,10 +137,34 @@ export function isRunReply(
 // One-shot messages
 // ---------------------------------------------------------------------------
 
-/** Worker → tab, telling the panel to open. Broadcast to every frame. */
+/** Worker → tab, telling the panel to open. */
 export type TabMessage =
-  | { type: "REWRITE_WITH"; presetId: string; selectionText: string }
+  | {
+      type: "REWRITE_WITH";
+      presetId: string;
+      selectionText: string;
+      /**
+       * True when the message went to every frame because the worker could not
+       * tell which one the click came from, so the frames have to settle it by
+       * focus.
+       *
+       * Normally false: `contextMenus.onClicked` reports the frame, delivery is
+       * addressed at it, and a frame second-guessing that could only refuse a
+       * correct message.
+       */
+      broadcast: boolean;
+    }
   | { type: "SHOW_PICKER" };
+
+/**
+ * A tab message as the sender writes it; `dispatchToTab` attaches `broadcast`.
+ *
+ * The same split as `PortReplyBody` below, and for the same reason: how a
+ * message travelled is known where it is sent, not where it is composed.
+ */
+export type TabMessageBody = WithoutBroadcast<TabMessage>;
+
+type WithoutBroadcast<T> = T extends unknown ? Omit<T, "broadcast"> : never;
 
 /** Page or popup → worker. */
 export type RuntimeMessage = { type: "GET_PRESETS" } | { type: "GET_STATE" };

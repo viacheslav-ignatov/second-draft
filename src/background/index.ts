@@ -40,8 +40,11 @@ chrome.storage.onChanged.addListener((changes, area) => {
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   const presetId = presetIdFromMenuItem(info.menuItemId);
   if (!presetId || !tab?.id) return;
-  // `frameId` is 0 for the top-level document, so the fallback is the frame the
-  // user is most likely in rather than a broadcast.
+  // Passed through as-is, `undefined` included. The top-level document is frame
+  // 0, not a missing `frameId` — Chrome omits the field only when it could not
+  // identify the frame at all, and guessing the top document there would open
+  // the panel in the wrong place or nowhere. `dispatchToTab` falls back to the
+  // broadcast the keyboard path already uses: noisier, but it arrives.
   void dispatchToTab(
     tab.id,
     {
@@ -49,7 +52,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
       presetId,
       selectionText: info.selectionText ?? "",
     },
-    info.frameId ?? 0,
+    info.frameId,
   );
 });
 

@@ -174,8 +174,8 @@ function harness(options: HarnessOptions = {}) {
   };
 }
 
-const rewrite = (presetId: string) =>
-  ({ type: "REWRITE_WITH", presetId, selectionText: "" }) as const;
+const rewrite = (presetId: string, broadcast = false) =>
+  ({ type: "REWRITE_WITH", presetId, selectionText: "", broadcast }) as const;
 
 test.afterEach(() => {
   clearGlobals();
@@ -320,16 +320,32 @@ test("a frame with no editable field answers nothing", async () => {
   assert.deepEqual(h.runs, []);
 });
 
-test("a menu click is trusted; the keyboard command still needs focus", async () => {
-  // Chrome addressed the menu message at this frame, so second-guessing it can
-  // only refuse a correct delivery — and a right-click does not reliably leave
-  // focus behind, so the refusal would be routine rather than theoretical.
-  const clicked = harness({ ownsFocus: false });
-  await clicked.controller.handleMessage(rewrite("shorter"));
-  assert.deepEqual(clicked.runs, [["shorter", "some text"]]);
+test("an addressed menu click is trusted; a broadcast one is not", async () => {
+  // Chrome named the frame and the message was sent there, so second-guessing
+  // it could only refuse a correct delivery — and it would, routinely: a
+  // right-click does not reliably leave focus behind.
+  const addressed = harness({ ownsFocus: false });
+  await addressed.controller.handleMessage(rewrite("shorter"));
+  assert.deepEqual(addressed.runs, [["shorter", "some text"]]);
 
-  // The shortcut has no frame to aim at and reaches all of them, so here the
-  // check is the only thing keeping two frames from both answering.
+  // The fallback, for when Chrome could not identify the frame: every frame got
+  // this, so without the check every frame with a field would open a panel.
+  const shouted = harness({ ownsFocus: false });
+  await shouted.controller.handleMessage(rewrite("shorter", true));
+  assert.deepEqual(shouted.runs, [], "not this frame — focus is elsewhere");
+
+  const shoutedHere = harness({ ownsFocus: true });
+  await shoutedHere.controller.handleMessage(rewrite("shorter", true));
+  assert.deepEqual(
+    shoutedHere.runs,
+    [["shorter", "some text"]],
+    "the frame holding focus answers, so the click is not lost",
+  );
+});
+
+test("the keyboard command always needs focus", async () => {
+  // It has no frame to aim at and reaches all of them, so here the check is the
+  // only thing keeping two frames from both answering.
   const picker = harness({ ownsFocus: false });
   await picker.controller.handleMessage({ type: "SHOW_PICKER" });
   assert.deepEqual(picker.events, []);

@@ -284,10 +284,12 @@ export function createController(deps: ControllerDeps): Controller {
       if (!deps.field()) return;
 
       if (message?.type === "REWRITE_WITH") {
-        // No focus check here on purpose. Chrome knows which frame was
-        // right-clicked and `dispatchToTab` addresses that one, so a second
-        // opinion can only overrule a correct delivery — and it would, because
-        // a right-click does not reliably leave focus behind.
+        // Normally addressed: Chrome named the frame and `dispatchToTab` sent
+        // there, so a second opinion could only overrule a correct delivery —
+        // and it would, because a right-click does not reliably leave focus
+        // behind. The check is for the rare message that went to every frame,
+        // where it is the only thing stopping all of them from answering.
+        if (message.broadcast && !deps.ownsFocus()) return;
         target = deps.capture(message.selectionText);
         client.reset();
         await run(message.presetId);
