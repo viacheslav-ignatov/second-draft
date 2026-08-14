@@ -13,6 +13,9 @@ import type { TabMessage } from "../shared/messages.ts";
 /** The tab may close mid-call; there is nothing to do about it. */
 const noop = (): void => undefined;
 
+/** Long enough to be noticed, short enough not to look permanent. */
+const BADGE_CLEAR_MS = 4000;
+
 async function injectPanel(tabId: number, frameId?: number): Promise<void> {
   await chrome.scripting.executeScript({
     target:
@@ -31,10 +34,16 @@ async function flagUninjectable(tabId: number): Promise<void> {
   try {
     await chrome.action.setBadgeText({ tabId, text: "!" });
     await chrome.action.setBadgeBackgroundColor({ tabId, color: "#cf222e" });
-    setTimeout(
-      () => void chrome.action.setBadgeText({ tabId, text: "" }).catch(noop),
-      4000,
-    );
+    setTimeout(() => {
+      // Nothing awaits this one. `.catch` covers a rejected promise, but an
+      // invalidated extension context throws synchronously instead, and an
+      // exception raised inside a timer has nowhere to go.
+      try {
+        void chrome.action.setBadgeText({ tabId, text: "" }).catch(noop);
+      } catch {
+        /* the tab, or the extension itself, is gone */
+      }
+    }, BADGE_CLEAR_MS);
   } catch {
     /* tab closed */
   }
