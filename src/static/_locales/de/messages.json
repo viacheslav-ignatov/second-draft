@@ -173,6 +173,9 @@
   "errNoInsert": {
     "message": "In dieses Feld lässt sich nicht schreiben. Kopiere den Text stattdessen."
   },
+  "errFieldChanged": {
+    "message": "Das Feld hat sich geändert, während der Entwurf entstand – es wurde nichts eingefügt. Kopiere den Entwurf stattdessen."
+  },
   "errClipboard": {
     "message": "Die Seite blockiert die Zwischenablage. Der Text ist markiert – Cmd/Strg+C drücken."
   },

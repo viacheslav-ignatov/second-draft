@@ -175,6 +175,31 @@ test("insertion fires the events a controlled input listens for", async () => {
   );
 });
 
+test("a field edited during generation is left alone", async () => {
+  const { document, target } = await withDom(`<textarea id="t"></textarea>`);
+  const textarea = el<HTMLTextAreaElement>(document, "t");
+  textarea.value = "keep this part";
+  textarea.focus();
+  textarea.setSelectionRange(5, 9);
+
+  const captured = target.capture();
+  assert.ok(captured);
+
+  // The user kept typing while the model was thinking; offsets 5–9 no longer
+  // mean what they meant at capture.
+  textarea.value = "I changed my mind and typed something else entirely";
+
+  const result = target.insert(captured, "that");
+
+  assert.equal(result.ok, false);
+  assert.equal(result.stale, true, "and says why, so the panel can explain");
+  assert.equal(
+    textarea.value,
+    "I changed my mind and typed something else entirely",
+    "what the user typed is untouched",
+  );
+});
+
 test("inserting into a field that has left the DOM fails cleanly", async () => {
   const { document, target } = await withDom(`<textarea id="t"></textarea>`);
   const textarea = el<HTMLTextAreaElement>(document, "t");

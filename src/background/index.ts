@@ -40,11 +40,17 @@ chrome.storage.onChanged.addListener((changes, area) => {
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   const presetId = presetIdFromMenuItem(info.menuItemId);
   if (!presetId || !tab?.id) return;
-  void dispatchToTab(tab.id, {
-    type: "REWRITE_WITH",
-    presetId,
-    selectionText: info.selectionText ?? "",
-  });
+  // `frameId` is 0 for the top-level document, so the fallback is the frame the
+  // user is most likely in rather than a broadcast.
+  void dispatchToTab(
+    tab.id,
+    {
+      type: "REWRITE_WITH",
+      presetId,
+      selectionText: info.selectionText ?? "",
+    },
+    info.frameId ?? 0,
+  );
 });
 
 chrome.commands.onCommand.addListener((command) => {

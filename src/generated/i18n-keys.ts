@@ -10,6 +10,7 @@ export type MessageKey =
   | "errClipboard"
   | "errEnglishOnly"
   | "errEnglishOnlyHint"
+  | "errFieldChanged"
   | "errNoInsert"
   | "errNoPack"
   | "errNothing"
@@ -97,6 +98,7 @@ export const MESSAGE_KEYS: readonly MessageKey[] = [
   "errClipboard",
   "errEnglishOnly",
   "errEnglishOnlyHint",
+  "errFieldChanged",
   "errNoInsert",
   "errNoPack",
   "errNothing",

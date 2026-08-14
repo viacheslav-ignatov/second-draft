@@ -23,6 +23,16 @@ import { execute, warmUp } from "./ai/executors.ts";
 import { tooLongForAnyExecutor } from "./ai/limits.ts";
 import { allPresets } from "./presets.ts";
 
+/**
+ * How much text the detector is shown.
+ *
+ * Detection only needs a sample, but `detect` is handed `innerText` of whatever
+ * the user is editing — a long contenteditable arrives whole. The size check in
+ * `runGeneration` does not cover this path, so the cap lives here. A thousand
+ * characters is far more than any detector needs to be confident.
+ */
+const DETECT_SAMPLE = 1000;
+
 export function registerPort(): void {
   chrome.runtime.onConnect.addListener((port) => {
     if (port.name !== PORT_NAME) return;
@@ -72,7 +82,7 @@ function attach(port: chrome.runtime.Port): void {
         return;
 
       case "detect":
-        void detectLanguage(message.text ?? "", post)
+        void detectLanguage((message.text ?? "").slice(0, DETECT_SAMPLE), post)
           .then((language) => {
             post({ type: "language", language });
           })

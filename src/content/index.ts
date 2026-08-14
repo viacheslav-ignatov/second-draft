@@ -27,6 +27,9 @@ declare global {
   }
 }
 
+/** Long enough to read the lost-undo warning, short enough not to be in the way. */
+const INSERTED_NO_UNDO_MS = 2500;
+
 // Injection is repeated on every invocation, so guard against a second copy
 // installing a second set of listeners.
 if (!window.__secondDraftLoaded) {
@@ -47,13 +50,25 @@ function main(): void {
       if (!text || !target) return;
       const result = insert(target, text);
       if (!result.ok) {
-        panel.setStatus(t("errNoInsert"), true);
+        // The panel stays open either way: the draft is still in the textarea,
+        // and Copy is the way out.
+        panel.setStatus(
+          t(result.stale ? "errFieldChanged" : "errNoInsert"),
+          true,
+        );
         return;
       }
       // Undo only survives the execCommand path; say so rather than letting the
-      // user discover it by pressing Cmd+Z and losing their words.
-      if (result.undoLost) panel.setStatus(t("statusInsertedNoUndo"));
-      close();
+      // user discover it by pressing Cmd+Z and losing their words. Closing
+      // immediately would remove the panel from the DOM in the same frame the
+      // status was written, so the warning was never actually on screen.
+      if (result.undoLost) {
+        panel.setStatus(t("statusInsertedNoUndo"));
+        panel.setBusy(true);
+        setTimeout(close, INSERTED_NO_UNDO_MS);
+      } else {
+        close();
+      }
     },
     onCopy: (text) => void copy(text),
     onRetry: () => current && void run(current),

@@ -20,22 +20,40 @@ function menuTitle(label: string): string {
   return label.replaceAll("%s", `%${ZERO_WIDTH_SPACE}s`);
 }
 
-export async function buildMenus(): Promise<void> {
+let chain: Promise<void> = Promise.resolve();
+
+/**
+ * Rebuilds are serialised, because two arrive together as a matter of course:
+ * saving presets writes a `remove` and a `set`, and each fires its own
+ * `storage.onChanged`. Interleaved, one rebuild's `removeAll()` lands between
+ * the other's `create()` calls and Chrome rejects the duplicate ids — silently,
+ * into `runtime.lastError`, leaving a half-built menu.
+ */
+export function buildMenus(): Promise<void> {
+  chain = chain.catch(() => undefined).then(rebuild);
+  return chain;
+}
+
+async function rebuild(): Promise<void> {
   const presets = summarize(await allPresets());
   await chrome.contextMenus.removeAll();
-  chrome.contextMenus.create({
-    id: MENU_ROOT,
-    title: t("menuRoot"),
-    contexts: ["editable"],
-  });
+  create({ id: MENU_ROOT, title: t("menuRoot"), contexts: ["editable"] });
   for (const { id, label } of presets) {
-    chrome.contextMenus.create({
+    create({
       id: MENU_PREFIX + id,
       parentId: MENU_ROOT,
       title: menuTitle(label),
       contexts: ["editable"],
     });
   }
+}
+
+/** `create` reports asynchronously; without the callback the error is swallowed. */
+function create(properties: chrome.contextMenus.CreateProperties): void {
+  chrome.contextMenus.create(properties, () => {
+    const error = chrome.runtime.lastError;
+    if (error) console.warn("[second-draft] menu item refused", error.message);
+  });
 }
 
 /** The preset id behind a menu item, or `null` if it is not one of ours. */

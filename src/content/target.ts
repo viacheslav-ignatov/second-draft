@@ -22,6 +22,14 @@ export interface Target {
   range?: Range | null;
   start?: number;
   end?: number;
+  /**
+   * The field's whole value at capture time, for text inputs.
+   *
+   * `start`/`end` are offsets into *that* string. Generation takes seconds and
+   * the panel does not lock the page, so by the time the user presses Insert the
+   * field may have been typed into and the offsets now point somewhere else.
+   */
+  snapshot?: string;
 }
 
 export function isEditable(el: Element | null | undefined): el is HTMLElement {
@@ -73,7 +81,14 @@ export function trackFocus(): void {
   );
 }
 
-const MENU_CLAIM_WINDOW_MS = 60_000;
+/**
+ * The gap between the right-click and the menu message arriving, plus slack.
+ * It used to be a minute, which was cover for the broadcast: any frame that had
+ * seen a right-click in the last minute would answer, and two could answer at
+ * once. The menu path is addressed by `frameId` now, so this only has to outlast
+ * the click itself.
+ */
+const MENU_CLAIM_WINDOW_MS = 5_000;
 
 /** Whether this frame was the one the user just right-clicked in. */
 export const claimedByMenu = (): boolean =>
@@ -130,6 +145,7 @@ export function capture(selectionText = ""): Target | null {
     wholeField: !hasSelection,
     start: hasSelection ? start : 0,
     end: hasSelection ? end! : value.length,
+    snapshot: value,
   };
 }
 
@@ -137,10 +153,24 @@ export interface InsertResult {
   ok: boolean;
   /** True when the value setter was used and Cmd+Z will no longer restore. */
   undoLost: boolean;
+  /** True when the field moved on since capture, so nothing was written. */
+  stale?: boolean;
 }
 
 export function insert(target: Target, text: string): InsertResult {
   if (!target.el.isConnected) return { ok: false, undoLost: false };
+
+  // Refuse rather than write to offsets that have gone stale: both paths below
+  // splice by `start`/`end`, so on a changed field they would cut the wrong
+  // range and take whatever the user typed in the meantime with them.
+  if (
+    !target.contentEditable &&
+    target.snapshot !== undefined &&
+    (target.el as HTMLInputElement).value !== target.snapshot
+  ) {
+    return { ok: false, undoLost: false, stale: true };
+  }
+
   const { el } = target;
   el.focus();
 

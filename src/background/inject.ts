@@ -13,9 +13,12 @@ import type { TabMessage } from "../shared/messages.ts";
 /** The tab may close mid-call; there is nothing to do about it. */
 const noop = (): void => undefined;
 
-async function injectPanel(tabId: number): Promise<void> {
+async function injectPanel(tabId: number, frameId?: number): Promise<void> {
   await chrome.scripting.executeScript({
-    target: { tabId, allFrames: true },
+    target:
+      frameId === undefined
+        ? { tabId, allFrames: true }
+        : { tabId, frameIds: [frameId] },
     files: ["content.js"],
   });
 }
@@ -37,16 +40,26 @@ async function flagUninjectable(tabId: number): Promise<void> {
   }
 }
 
-/** Injects if needed, then broadcasts. Only the frame with the field replies. */
+/**
+ * Injects if needed, then delivers.
+ *
+ * With a `frameId` — which `contextMenus.onClicked` supplies, since Chrome knows
+ * exactly which frame was right-clicked — only that frame is touched. Without
+ * one, as on the keyboard path, the message is broadcast and the frames sort it
+ * out between themselves via `ownsFocus()`.
+ */
 export async function dispatchToTab(
   tabId: number,
   message: TabMessage,
+  frameId?: number,
 ): Promise<void> {
   try {
-    await injectPanel(tabId);
+    await injectPanel(tabId, frameId);
   } catch (error) {
     console.warn("[second-draft] injection refused", error);
     return flagUninjectable(tabId);
   }
-  await chrome.tabs.sendMessage(tabId, message).catch(noop);
+  await chrome.tabs
+    .sendMessage(tabId, message, frameId === undefined ? {} : { frameId })
+    .catch(noop);
 }
