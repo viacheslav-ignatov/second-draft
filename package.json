@@ -6,7 +6,7 @@
   "description": "Chrome extension that rewrites what you typed using Chrome's built-in on-device model. No network access.",
   "license": "MIT",
   "engines": {
-    "node": ">=22.6"
+    "node": ">=22.13"
   },
   "scripts": {
     "build": "node scripts/build.mjs",
@@ -22,19 +22,19 @@
     "prepare": "node scripts/install-hooks.mjs"
   },
   "devDependencies": {
-    "@eslint/js": "9.39.5",
-    "@types/chrome": "0.2.5",
+    "@eslint/js": "10.0.1",
+    "@types/chrome": "0.2.6",
     "@types/dom-chromium-ai": "0.0.17",
-    "@types/node": "22.20.1",
+    "@types/node": "26.2.0",
     "esbuild": "0.28.2",
-    "eslint": "9.39.5",
+    "eslint": "10.8.1",
     "eslint-config-prettier": "10.1.8",
-    "globals": "15.15.0",
+    "globals": "17.11.0",
     "happy-dom": "20.11.2",
     "prettier": "3.9.6",
-    "stylelint": "16.26.1",
-    "stylelint-config-standard": "36.0.1",
-    "typescript": "5.9.2",
+    "stylelint": "17.14.1",
+    "stylelint-config-standard": "40.0.0",
+    "typescript": "6.0.3",
     "typescript-eslint": "8.67.0"
   }
 }

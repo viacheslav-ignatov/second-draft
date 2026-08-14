@@ -70,6 +70,10 @@ enforces.
   `DOMException` message.
 - The keyboard focus ring on the panel is drawn: later, less specific rules were
   overriding it.
+- **Buttons and chips get the weight and size they were meant to have.** They
+  were styled with `font: 600 12px/1 inherit`, and a CSS-wide keyword is only
+  valid as the sole value of a declaration — so the browser threw the whole
+  declaration away, weight and size included. Found by stylelint 17.
 - A preset label containing `%s` no longer picks up the selected text.
 - The language detector is given the first 1000 characters rather than the whole
   of a long `contenteditable`.

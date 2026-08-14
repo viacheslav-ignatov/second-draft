@@ -69,7 +69,9 @@ button {
   border-radius: var(--sd-radius);
   background: var(--sd-button-bg);
   color: var(--sd-fg);
-  font: 600 13px/1 inherit;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1;
   cursor: pointer;
 }
 

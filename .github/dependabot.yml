@@ -12,6 +12,13 @@ updates:
     groups:
       dev-dependencies:
         patterns: ["*"]
+    ignore:
+      # TypeScript 7 is a hard stop, not a chore: typescript-eslint refuses to
+      # load against it and takes the whole type-aware lint step with it. `tsc`
+      # itself is already happy on 7, so this comes off the moment the plugin
+      # ships support — https://github.com/typescript-eslint/typescript-eslint/issues/10940
+      - dependency-name: typescript
+        versions: ["7.x"]
 
   - package-ecosystem: github-actions
     directory: /

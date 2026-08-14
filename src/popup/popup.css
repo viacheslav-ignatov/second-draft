@@ -51,7 +51,9 @@ button {
   border-radius: var(--sd-radius);
   background: var(--sd-success);
   color: #fff;
-  font: 600 12px/1 inherit;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1;
   cursor: pointer;
 }
 

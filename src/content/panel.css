@@ -63,7 +63,9 @@ header b {
   border-radius: 12px;
   background: var(--sd-accent-bg);
   color: var(--sd-accent);
-  font: 600 11px/1 inherit;
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1;
   cursor: pointer;
 }
 
@@ -95,7 +97,7 @@ header b {
   color: var(--sd-fg-muted);
   font-size: 12px;
   white-space: pre-wrap;
-  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 textarea {
@@ -134,7 +136,9 @@ button.act {
   border-radius: var(--sd-radius);
   background: var(--sd-button-bg);
   color: var(--sd-fg);
-  font: 600 12px/1 inherit;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1;
   cursor: pointer;
 }
 
