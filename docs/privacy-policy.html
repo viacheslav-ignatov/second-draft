@@ -61,9 +61,22 @@
 
     <h2>Short version</h2>
     <p>
-      The extension sends nothing anywhere. It cannot: it declares no host
-      permissions, so Chrome would block a network request even if one were
-      attempted.
+      The extension sends nothing anywhere, and that is enforced rather than
+      promised. The manifest declares no host permissions, and the extension's
+      Content Security Policy sets <code>connect-src 'none'</code> and
+      <code>img-src 'self'</code>, so Chrome refuses <code>fetch</code>,
+      <code>XMLHttpRequest</code>, <code>WebSocket</code> and
+      <code>sendBeacon</code> from the service worker and from every extension
+      page. The source contains no network call of any kind, the build asserts
+      the policy on every run, and the linter rejects a commit that introduces
+      one.
+    </p>
+    <p>
+      One boundary is worth stating plainly: the panel injected into a web page
+      runs under that page's Content Security Policy, not the extension's, so
+      there the guarantee rests on the source, the linter and the review rather
+      than on Chrome refusing the call. The source is public and the check is
+      one command.
     </p>
 
     <h2>What the extension reads</h2>
@@ -126,7 +139,7 @@
 
     <h2>Contact</h2>
     <p>
-      <a href="https://github.com/USERNAME/second-draft/issues"
+      <a href="https://github.com/viacheslav-ignatov/second-draft/issues"
         >Open an issue on GitHub</a
       >.
     </p>

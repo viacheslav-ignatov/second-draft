@@ -110,7 +110,7 @@
 
     <div class="cta">
       <a class="primary" href="#">Chrome Web Store</a>
-      <a class="ghost" href="https://github.com/USERNAME/second-draft"
+      <a class="ghost" href="https://github.com/viacheslav-ignatov/second-draft"
         >Source on GitHub</a
       >
     </div>
@@ -122,10 +122,11 @@
     <h2>Why it is different</h2>
     <p>
       Every other writing assistant sends what you type to somebody's API. This
-      one cannot: it declares no host permissions, so Chrome would block a
-      network request even if the code attempted one. That makes it usable on
-      the text you would never paste into a web tool — review comments, internal
-      drafts, anything under an NDA.
+      one cannot: it declares no host permissions, and its Content Security
+      Policy sets <code>connect-src 'none'</code>, so Chrome refuses a network
+      request from the extension even if the code attempted one. That makes it
+      usable on the text you would never paste into a web tool — review
+      comments, internal drafts, anything under an NDA.
     </p>
 
     <h2>What it does</h2>
@@ -153,8 +154,10 @@
 
     <footer>
       <a href="privacy-policy.html">Privacy policy</a> ·
-      <a href="https://github.com/USERNAME/second-draft/issues">Support</a> ·
-      MIT licence
+      <a href="https://github.com/viacheslav-ignatov/second-draft/issues"
+        >Support</a
+      >
+      · MIT licence
     </footer>
   </body>
 </html>

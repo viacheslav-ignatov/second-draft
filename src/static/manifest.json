@@ -12,6 +12,9 @@
     "128": "icons/icon-128.png"
   },
   "permissions": ["contextMenus", "activeTab", "scripting", "storage"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; connect-src 'none'; img-src 'self'; style-src 'self'; base-uri 'none'; form-action 'none'; frame-src 'none'"
+  },
   "background": {
     "service_worker": "background.js",
     "type": "module"

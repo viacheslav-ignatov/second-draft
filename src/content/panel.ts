@@ -8,7 +8,7 @@
 
 import tokens from "../shared/tokens.css";
 import css from "./panel.css";
-import { t } from "../shared/i18n.ts";
+import { t, type MessageKey } from "../shared/i18n.ts";
 import type { PresetSummary } from "../shared/messages.ts";
 
 export interface PanelCallbacks {
@@ -19,26 +19,43 @@ export interface PanelCallbacks {
   onClose(): void;
 }
 
-const TEMPLATE = (): string => `
+/**
+ * Deliberately free of locale strings.
+ *
+ * Translations come from contributors (CONTRIBUTING.md, "Adding a language"),
+ * which makes them the one untrusted input that reaches this markup. Building
+ * the skeleton first and filling the strings in afterwards, as text and as
+ * attribute values, means an apostrophe cannot break out of an attribute and a
+ * tag cannot execute in the page's world.
+ */
+const TEMPLATE = `
   <div class="panel" role="dialog" aria-label="Second Draft">
     <header>
       <b>Second Draft</b>
-      <button class="close" title="${t("panelClose")}" aria-label="${t("panelClose")}">&times;</button>
+      <button class="close">&times;</button>
     </header>
     <div class="body">
       <div class="chips"></div>
       <div class="lang"></div>
       <div class="orig"></div>
-      <textarea spellcheck="false" aria-label="${t("panelDraftLabel")}"></textarea>
+      <textarea spellcheck="false"></textarea>
       <div class="status" aria-live="polite"></div>
       <div class="actions">
-        <button class="act primary insert" disabled>${t("panelInsert")}</button>
-        <button class="act copy" disabled>${t("panelCopy")}</button>
-        <button class="act retry" disabled>${t("panelRetry")}</button>
+        <button class="act primary insert" disabled></button>
+        <button class="act copy" disabled></button>
+        <button class="act retry" disabled></button>
       </div>
-      <div class="hint">${t("panelHint")}</div>
+      <div class="hint"></div>
     </div>
   </div>`;
+
+/** Typed, so a renamed key fails the build the way `t()` in the markup used to. */
+const TEXT: Record<string, MessageKey> = {
+  ".insert": "panelInsert",
+  ".copy": "panelCopy",
+  ".retry": "panelRetry",
+  ".hint": "panelHint",
+};
 
 export class Panel {
   private host: HTMLElement | null = null;
@@ -57,8 +74,13 @@ export class Panel {
 
     this.host = document.createElement("div");
     this.host.id = "second-draft-host";
-    this.root = this.host.attachShadow({ mode: "open" });
-    this.root.innerHTML = `<style>${tokens}${css}</style>${TEMPLATE()}`;
+    // Closed, so the page cannot read the user's text or click Insert on their
+    // behalf through `host.shadowRoot`. It holds here because a content script
+    // runs in an isolated world: the page cannot patch `attachShadow` to steal
+    // the root on the way out.
+    this.root = this.host.attachShadow({ mode: "closed" });
+    this.root.innerHTML = `<style>${tokens}${css}</style>${TEMPLATE}`;
+    this.localize();
     document.body.appendChild(this.host);
 
     this.on(".close", "click", () => {
@@ -100,6 +122,21 @@ export class Panel {
     this.host = null;
     this.root = null;
     this.selected = null;
+  }
+
+  /** Fills the skeleton in, as text and attribute values rather than as markup. */
+  private localize(): void {
+    const close = this.query(".close");
+    if (close) {
+      close.title = t("panelClose");
+      close.setAttribute("aria-label", t("panelClose"));
+    }
+    this.query("textarea")?.setAttribute("aria-label", t("panelDraftLabel"));
+
+    for (const [selector, key] of Object.entries(TEXT)) {
+      const el = this.query(selector);
+      if (el) el.textContent = t(key);
+    }
   }
 
   private readonly onKeydown = (event: KeyboardEvent): void => {

@@ -4,8 +4,18 @@
 
 ## Short version
 
-The extension sends nothing anywhere. It cannot: it declares no host permissions,
-so Chrome would block a network request even if one were attempted.
+The extension sends nothing anywhere, and that is enforced rather than promised.
+The manifest declares no host permissions, and the extension's Content Security
+Policy sets `connect-src 'none'` and `img-src 'self'`, so Chrome refuses `fetch`,
+`XMLHttpRequest`, `WebSocket` and `sendBeacon` from the service worker and from
+every extension page. The source contains no network call of any kind, the build
+asserts the CSP on every run, and the linter rejects a commit that introduces one.
+
+One boundary is worth stating plainly: the panel injected into a web page runs
+under that page's Content Security Policy, not the extension's, so there the
+guarantee rests on the source, the linter and the review rather than on Chrome
+refusing the call. The source is public and the check is one command — see
+[SECURITY.md](SECURITY.md).
 
 ## What the extension reads
 
@@ -51,4 +61,4 @@ repository.
 
 ## Contact
 
-Open an issue at <https://github.com/USERNAME/second-draft/issues>.
+Open an issue at <https://github.com/viacheslav-ignatov/second-draft/issues>.

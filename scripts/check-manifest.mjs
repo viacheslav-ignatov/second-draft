@@ -33,6 +33,20 @@ const extra = (manifest.permissions ?? []).filter(
 if (extra.length)
   problems.push(`unjustified permission(s): ${extra.join(", ")}`);
 
+// "Sends nothing anywhere" is a claim PRIVACY.md makes in the user's name, so
+// the directives that actually enforce it are asserted rather than assumed.
+// Note the limit: this CSP governs the service worker and the extension pages,
+// never the injected content script, which lives under the page's own policy.
+const csp = manifest.content_security_policy?.extension_pages ?? "";
+for (const directive of [
+  "connect-src 'none'",
+  "object-src 'none'",
+  "img-src 'self'",
+]) {
+  if (!csp.includes(directive))
+    problems.push(`extension_pages CSP must contain "${directive}"`);
+}
+
 // Everything the manifest points at has to exist in the built output.
 if (existsSync("dist")) {
   const referenced = [
@@ -53,5 +67,5 @@ if (problems.length) {
 }
 
 console.log(
-  `  ✓ v${manifest.version}, ${manifest.permissions.join(", ")}, no host permissions`,
+  `  ✓ v${manifest.version}, ${manifest.permissions.join(", ")}, no host permissions, connect-src 'none'`,
 );

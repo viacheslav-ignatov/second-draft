@@ -23,7 +23,7 @@ This extension does not bundle, patch or update model weights.
 
 ## Reporting a vulnerability
 
-Open a [security advisory](https://github.com/USERNAME/second-draft/security/advisories/new)
+Open a [security advisory](https://github.com/viacheslav-ignatov/second-draft/security/advisories/new)
 rather than a public issue. I will confirm within a week.
 
 Things I consider vulnerabilities: any path that causes a network request; any
@@ -39,7 +39,16 @@ excluding a machine, or a site whose editor the insertion logic cannot handle.
 ```bash
 grep -r "fetch\|XMLHttpRequest\|WebSocket\|sendBeacon" src/   # nothing
 node -p "require('./src/static/manifest.json').host_permissions"  # undefined
+node -p "require('./src/static/manifest.json').content_security_policy.extension_pages"
 ```
 
 `npm run check` asserts the manifest invariants on every run, so a change that
-adds a host permission or a declared content script fails the build.
+adds a host permission, a declared content script, or that drops `connect-src
+'none'` from the CSP fails the build. ESLint rejects `fetch`, `XMLHttpRequest`,
+`WebSocket`, `EventSource` and `navigator.sendBeacon` anywhere in `src/`.
+
+The CSP governs the service worker and the extension's own pages. It does not
+reach the panel injected into a web page: a content script runs under the page's
+policy, and its `fetch` is exempt even from that. There the guarantee is the
+`grep` above, the lint rule and this review process — which is why the source is
+public.

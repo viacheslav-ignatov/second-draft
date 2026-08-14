@@ -55,6 +55,11 @@ for (const [name, messages] of Object.entries(locales)) {
       fail(`${name}/${key} has no message string`);
       continue;
     }
+    // Translations are contributed, and nothing downstream renders them as
+    // markup any more — so a tag here is either a mistake or an attempt.
+    if (/[<>]/.test(entry.message))
+      fail(`${name}/${key} contains markup characters`);
+
     const used = new Set(
       [...entry.message.matchAll(/\$([A-Za-z0-9_]+)\$/g)].map((m) =>
         m[1].toLowerCase(),

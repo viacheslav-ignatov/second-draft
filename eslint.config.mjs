@@ -31,6 +31,38 @@ export default tseslint.config(
       ],
       "no-console": ["error", { allow: ["warn", "error", "log"] }],
       eqeqeq: ["error", "always", { null: "ignore" }],
+
+      // The manifest CSP blocks these at runtime, but only on extension pages
+      // and in the service worker. The content script runs under the page's
+      // policy — and its fetch is exempt from that — so for content/ this rule
+      // is the enforcement, not a duplicate of it.
+      "no-restricted-globals": [
+        "error",
+        {
+          name: "fetch",
+          message: "Second Draft makes no network requests. See PRIVACY.md.",
+        },
+        {
+          name: "XMLHttpRequest",
+          message: "Second Draft makes no network requests. See PRIVACY.md.",
+        },
+        {
+          name: "WebSocket",
+          message: "Second Draft makes no network requests. See PRIVACY.md.",
+        },
+        {
+          name: "EventSource",
+          message: "Second Draft makes no network requests. See PRIVACY.md.",
+        },
+      ],
+      "no-restricted-properties": [
+        "error",
+        {
+          object: "navigator",
+          property: "sendBeacon",
+          message: "Second Draft makes no network requests. See PRIVACY.md.",
+        },
+      ],
     },
   },
 

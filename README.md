@@ -34,7 +34,7 @@ original in an editable box and goes into the field only when you press Insert.
 **From source:**
 
 ```bash
-git clone https://github.com/USERNAME/second-draft
+git clone https://github.com/viacheslav-ignatov/second-draft
 cd second-draft
 npm install
 npm run build
@@ -61,8 +61,12 @@ listing reads _no site access_ — and yet it works on every site.
 
 Both entry points, the context menu item and the keyboard command, grant
 `activeTab` for the tab you acted on. The panel is injected at that moment and
-nowhere else. Chrome would block a network request even if the code attempted
-one, which turns "we don't collect your data" from a promise into a property.
+nowhere else. The manifest's Content Security Policy sets `connect-src 'none'`,
+so Chrome refuses a network request from the service worker or any extension
+page even if the code attempted one — which turns "we don't collect your data"
+from a promise into a property. The build asserts that directive on every run
+and the linter rejects the APIs outright, which is what keeps the injected panel
+honest too; see [SECURITY.md](SECURITY.md) for where each guarantee comes from.
 
 | Permission     | Why                                                           |
 | -------------- | ------------------------------------------------------------- |
