@@ -2,62 +2,84 @@
 
 ## 0.6.0
 
-Tooling and test coverage. No user-facing behaviour changed.
+First public release. Tooling, test coverage, and the security work that turns
+the privacy claims from something the author promises into something the browser
+enforces.
+
+### Security
+
+- **Content Security Policy** on every extension page and the service worker:
+  `connect-src 'none'`, `img-src 'self'`, `object-src 'none'`. The docs used to
+  say that declaring no host permissions would stop an outgoing request. It
+  would not — that blocks reading the response, and one-way exfiltration never
+  needs one. `npm run check` now fails if the directives are dropped, and ESLint
+  rejects `fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource` and
+  `sendBeacon` anywhere in the source, which is what covers the injected panel
+  the CSP cannot reach.
+- **The panel's shadow root is closed**, so page script can no longer read the
+  draft or click Insert through `host.shadowRoot`.
+- **Locale strings are set as text and attributes**, never interpolated into
+  markup. Translations are the one untrusted input that reaches the panel;
+  `npm run check` also rejects a translation containing `<` or `>`.
 
 ### Added
 
 - **Typed message keys.** `src/generated/i18n-keys.ts` is generated from the
   English locale, so `t("statusFoo")` for a key that does not exist is a compile
-  error. The i18n checker shrank to what types cannot see: locale parity,
-  placeholder declarations, and `data-i18n` bindings in HTML.
+  error. CI verifies the generated file is current.
 - **ESLint (`strictTypeChecked`), stylelint and Prettier**, wired into
-  `npm run check` and CI. Three lint suppressions remain, each with a comment
-  explaining why the rule is wrong for that line.
+  `npm run check` and CI.
 - **Shared design tokens** in `src/shared/tokens.css`, linked by the extension
   pages and inlined into the panel's shadow root. The palette was previously
   duplicated across four stylesheets.
-- **Tests for the parts that had none**: field capture and insertion under
-  happy-dom, the port protocol (ids, stale replies, one run at a time,
-  cancellation on disconnect), and the executor chain falling through four APIs.
-  41 tests in total, up from 14.
-- **Bundle size budget** (`scripts/check-size.mjs`), a pre-commit hook installed
-  by `npm install`, `SECURITY.md`, `CODEOWNERS` and Dependabot.
-- CI uploads the built `dist/` as an artifact, so a reviewer can load the
-  extension without building it.
+- **Tests for the parts that had none**, from 14 to 91: field capture and
+  insertion under happy-dom, the port protocol, the executor chain, the panel's
+  end of the port, session recovery, menu rebuilds, injection and delivery, and
+  the coordination between them. No browser required.
+- **CI and a release workflow.** Every push runs the checks and uploads the
+  built `dist/` as an artifact, so a reviewer can load the extension without
+  building it. A `v*` tag refuses to build unless it matches the manifest
+  version, then attaches the store zip.
+- A bundle size budget, a pre-commit hook installed by `npm install`,
+  `SECURITY.md`, `CODEOWNERS`, Dependabot, `.editorconfig`, and a Node version
+  guard so `npm test` says what is wrong instead of failing inside a test file.
+- Presets that do not depend on the detected language — six of the nine
+  built-ins — no longer wait up to three seconds for detection before starting.
 
 ### Fixed
 
+- **Two detections in flight left the panel stuck.** A single pending slot let
+  one request's timeout consume another's resolver, so `detect()` never
+  returned and the panel sat on "checking the language" with every button,
+  including Retry, disabled until it was closed. Reproducible on the first run,
+  while the language pack downloads.
+- **Insertion no longer overwrites work done while the model was thinking.** The
+  captured offsets and range are checked against the field before anything is
+  written, in plain fields and rich editors alike, including the case where an
+  editor rebuilt its nodes and left the text identical. The panel says the field
+  changed instead of silently cutting the wrong range.
+- **The lost-undo warning is actually visible.** It was written into a panel
+  removed from the page in the same frame, so nobody ever read it.
+- **A right-click in an iframe opens one panel, not two.** The menu message is
+  delivered to the frame Chrome says was clicked, rather than broadcast to all
+  of them and settled by a timing heuristic.
+- **Saving presets no longer half-rebuilds the context menu.** Two storage
+  events arrived together and the interleaved rebuilds hit duplicate ids, which
+  vanished into `runtime.lastError` with nothing reading it.
+- Failures reach the panel in the user's language instead of as an English
+  `DOMException` message.
+- The keyboard focus ring on the panel is drawn: later, less specific rules were
+  overriding it.
+- A preset label containing `%s` no longer picks up the selected text.
+- The language detector is given the first 1000 characters rather than the whole
+  of a long `contenteditable`.
+- `document.execCommand` was called without checking it exists. Its absence now
+  falls through to the value setter instead of throwing.
 - The first draft of the design tokens declared the light-mode button variables
   _after_ the dark-mode block, so dark mode silently lost them.
 - `errorMessage()` replaces the `String((error as Error)?.message ?? error)`
   pattern that appeared in three places and lied to the type checker about what
   the AI APIs actually throw.
-
-## 0.6.0
-
-Tooling and test coverage. No user-facing behaviour changed except the
-`execCommand` guard below.
-
-### Added
-
-- `MessageKey` is generated from the English locale and `t()` is typed against
-  it, so a mistyped or removed message key fails the build. CI verifies the
-  generated file is current.
-- ESLint with type-aware rules, stylelint, and Prettier, all wired into
-  `npm run check` and CI.
-- Tests for the port protocol (request ids, cancellation, error paths), for the
-  executor chain degrading when APIs are missing, and for field capture and
-  insertion against a real DOM. 41 tests in total, no browser required.
-- `resetSessions()` so tests do not carry a session between cases.
-- A bundle budget, checked on every build.
-- `SECURITY.md` naming what counts as a vulnerability here, `CODEOWNERS`,
-  Dependabot, and an opt-in pre-commit hook.
-
-### Fixed
-
-- `document.execCommand` was called without checking it exists. It is deprecated
-  and will eventually be removed; its absence now falls through to the value
-  setter instead of throwing. Found by the new DOM tests.
 
 ## 0.5.0
 

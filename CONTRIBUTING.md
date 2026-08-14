@@ -52,8 +52,10 @@ Message keys are typed: `t("someKey")` only compiles if the key exists in
   limits, execution routes. New AI surfaces go in `executors.ts` as another route
   in the chain, returning `null` when unavailable.
 - `src/content/` — `target.ts` is DOM behaviour, `panel.ts` is a view with no
-  protocol knowledge, `client.ts` owns the port, `index.ts` coordinates. Keep
-  that separation; it is what makes the panel readable.
+  protocol knowledge, `client.ts` owns the port, `controller.ts` decides what
+  happens in what order, and `index.ts` is wiring only. Keep that separation; it
+  is what makes the panel readable, and it is why the controller can be tested
+  without a DOM.
 
 ## Adding a preset
 
@@ -76,7 +78,7 @@ Adding or removing a message means running `npm run gen:i18n` and committing
 ## Style
 
 The code is commented where a decision is non-obvious and silent where it is not.
-If a line looks strange — `execCommand`, the frame-claiming logic, the defensive
+If a line looks strange — `execCommand`, the closed shadow root, the defensive
 global lookups — there should be a comment saying why, and if you change one of
 those, keep the reason up to date.
 
@@ -87,7 +89,8 @@ Tests live in `tests/`, run with Node's own type stripping, and use the doubles
 in `tests/helpers/doubles.ts` — a fake port, a storage stub and a cancellable
 fake model. DOM behaviour is tested against happy-dom. If you touch `target.ts`
 or `port.ts`, add a case: those two files are where every shipped regression has
-come from so far.
+come from so far. Write the case so it fails against the code you are about to
+change, then fix it — a test that passes on the bug is documentation.
 
 ## Reporting a bug
 

@@ -126,6 +126,8 @@ src/
 │   ├── rules.ts         pure decision logic — gating, limits, validation
 │   ├── tokens.css       the palette, linked by pages and inlined into the panel
 │   ├── preset-storage.ts one storage key per preset
+│   ├── errors.ts        what the AI APIs actually throw
+│   ├── failures.ts      a thrown value → a sentence in the user's language
 │   └── i18n.ts
 ├── background/      service worker (ES module)
 │   ├── presets.ts       the catalogue
@@ -143,7 +145,8 @@ src/
 │   ├── panel.ts         shadow-DOM view, no protocol knowledge
 │   ├── panel.css
 │   ├── client.ts        the panel's end of the port
-│   └── index.ts         coordination
+│   ├── controller.ts    what happens in what order, and why
+│   └── index.ts         wiring: listeners in, dependencies out
 ├── popup/ options/ welcome/   extension pages, one .ts + .html + .css each
 ├── generated/       MessageKey union, generated from the English locale
 └── static/          manifest, icons, _locales
@@ -207,18 +210,28 @@ dependencies: none.
 
 ### Tests
 
-41 tests, no browser required:
+91 tests, no browser required:
 
-| File                     | Covers                                                           |
-| ------------------------ | ---------------------------------------------------------------- |
-| `rules.test.ts`          | Language gating, confidence floor, output cleanup, limits        |
-| `preset-storage.test.ts` | Per-key storage, corrupt entries, save/delete diffing            |
-| `port.test.ts`           | Request ids, cancellation, one generation at a time, error paths |
-| `executors.test.ts`      | The route chain degrading correctly when APIs are missing        |
-| `target.test.ts`         | Field capture, frame claiming, insertion and the undo fallback   |
+| File                     | Covers                                                             |
+| ------------------------ | ------------------------------------------------------------------ |
+| `rules.test.ts`          | Language gating, confidence floor, output cleanup, limits          |
+| `preset-storage.test.ts` | Per-key storage, corrupt entries, save/delete diffing              |
+| `presets.test.ts`        | Which presets depend on the detected language, and why             |
+| `port.test.ts`           | Request ids, cancellation, one generation at a time, error paths   |
+| `executors.test.ts`      | The route chain degrading correctly when APIs are missing          |
+| `sessions.test.ts`       | Recovery from a destroyed session — once, not in a loop            |
+| `failures.test.ts`       | A thrown value mapped to a message, and never leaked raw           |
+| `menus.test.ts`          | Two rebuilds at once not colliding on duplicate ids                |
+| `inject.test.ts`         | Frame-addressed injection and delivery, and the uninjectable page  |
+| `client.test.ts`         | Detections in flight, timeouts, replies from a superseded run      |
+| `controller.test.ts`     | What waits for detection, what the panel says, which frame answers |
+| `target.test.ts`         | Field capture, insertion, the undo fallback, a field that moved on |
 
 `tests/helpers/doubles.ts` holds a fake `chrome.runtime.Port`, a storage stub and
 a cancellable fake model; `target.test.ts` runs against happy-dom.
+
+Regression tests here are run against the old code before being kept — a test
+that passes on the bug it was written for is documentation, not a test.
 
 ### Adding a language
 
