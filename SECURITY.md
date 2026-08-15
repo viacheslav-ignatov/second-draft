@@ -78,3 +78,9 @@ reach the panel injected into a web page: a content script runs under the page's
 policy, and its `fetch` is exempt even from that. There the guarantee is the
 `grep` above, the lint rule and this review process — which is why the source is
 public.
+
+None of which would matter if the published package were built from something
+other than this source, so the workflow that builds it pins every third-party
+action to a commit hash rather than a tag — a tag can be moved to point at other
+code. The archive attached to a release is built from a clean checkout, and that
+is the archive uploaded to the store.
