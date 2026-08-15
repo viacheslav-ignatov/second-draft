@@ -15,9 +15,12 @@ Shot on a light background at 100% zoom, with no marketing text over them: the
 store frames them in its own layout and the README in another. Sizes were
 normalised by padding rather than cropping, so nothing is cut off mid-word.
 
-Still to make: the promo tile at 440×280 — the icon, the name, and one line.
+Two more listing assets live one directory up, for the same reason the shots
+here do not ship: the extension never loads them.
 
-`../icon-512.png` is the large icon the store listing wants. It lives there
-rather than in `src/static/icons/` because the extension itself never loads it —
-the manifest references 16, 32, 48 and 128 — and anything under `src/static/`
-ships inside the package.
+- `../promo-tile.png` — the small promo tile, 440×280. The icon at 88px, the
+  name, and one line, on white; the store draws its own frame around it, so it
+  needs no border of its own. Remake it the same way if the icon changes.
+- `../icon-512.png` — the large icon the listing wants. It is not in
+  `src/static/icons/` because the manifest references only 16, 32, 48 and 128,
+  and everything under `src/static/` ships inside the package.
