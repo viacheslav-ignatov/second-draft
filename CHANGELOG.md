@@ -1,9 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.6.1
 
-Nothing here changes what the extension does. Collected until there is a reason
-to publish a version.
+Housekeeping. Nothing here changes what the extension does or how it behaves —
+it is the tail of the post-release audit, published so the store package and the
+source are the same thing again.
 
 ### Fixed
 
