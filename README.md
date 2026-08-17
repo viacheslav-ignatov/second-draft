@@ -28,7 +28,7 @@ a softened rewrite ready to insert](docs/screenshots/panel.png)
 
 ## Install
 
-**From the Chrome Web Store** — _link once published._
+**[Install from the Chrome Web Store](https://chromewebstore.google.com/detail/second-draft/kgnibamkkeaapjemjmgnnoglonfcmgfb)**
 
 **From source:**
 
