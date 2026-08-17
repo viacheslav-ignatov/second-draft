@@ -1,5 +1,29 @@
 # Changelog
 
+## Unreleased
+
+Nothing here changes what the extension does. Collected until there is a reason
+to publish a version.
+
+### Fixed
+
+- The 1000-character sample handed to the language detector was cut by UTF-16
+  code unit, so a cut landing inside an emoji left an unpaired surrogate at the
+  end — half a character, and a string that is not well-formed UTF-16. It is
+  dropped instead.
+- A new custom preset gets a whole UUID for its id rather than the first eight
+  characters of one. Thirty-two bits will not collide across twelve presets, but
+  the storage key was never short enough to be worth shortening.
+
+### Changed
+
+- `build.mjs` copies files into the package by extension rather than copying
+  everything that is not `.ts`, so a `.DS_Store` or an editor backup sitting in
+  a page folder no longer ships to the store. Anything skipped is named, so a
+  new kind of asset does not go missing silently.
+- `check-size.mjs` reports a missing `dist/` and the command that builds one,
+  instead of an `ENOENT` stack trace out of `node:fs`.
+
 ## 0.6.0
 
 First public release. Tooling, test coverage, and the security work that turns

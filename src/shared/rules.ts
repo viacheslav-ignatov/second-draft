@@ -86,6 +86,24 @@ export function tooLongByChars(text: string): boolean {
 }
 
 /**
+ * `slice` counts UTF-16 code units, so a cut can land between the two halves of
+ * a surrogate pair and leave an unpaired one at the end — half a character, and
+ * a string that is no longer well-formed UTF-16. Anything outside the BMP is
+ * affected, which in a comment box means emoji.
+ *
+ * The orphan is dropped rather than replaced: `toWellFormed()` would substitute
+ * U+FFFD, and a replacement character is worse than one missing emoji for the
+ * only caller, which is feeding a language detector.
+ */
+export function sliceWholeChars(text: string, limit: number): string {
+  if (text.length <= limit) return text;
+  const cut = text.slice(0, limit);
+  const last = cut.charCodeAt(cut.length - 1);
+  const orphaned = last >= 0xd800 && last <= 0xdbff;
+  return orphaned ? cut.slice(0, -1) : cut;
+}
+
+/**
  * Storage is user-editable and synced across machines, so every stored preset is
  * treated as untrusted input on the way back in.
  */

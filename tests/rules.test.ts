@@ -11,6 +11,7 @@ import {
   languageIsCertain,
   normalizeCustomPreset,
   presetApplies,
+  sliceWholeChars,
   sortCustomPresets,
   tooLongByChars,
 } from "../src/shared/rules.ts";
@@ -101,6 +102,31 @@ test("stored presets are treated as untrusted input", () => {
   assert.equal(preset.instruction.length, INSTRUCTION_MAX);
   assert.equal(preset.englishOnly, true);
   assert.equal(preset.createdAt, 0);
+});
+
+// U+1F600, one character made of two UTF-16 code units.
+const GRIN = "😀";
+const LONE_HIGH_SURROGATE = /[\uD800-\uDBFF]$/;
+
+test("a cut inside an emoji drops it rather than half of it", () => {
+  const text = `abc${GRIN}def`;
+  const cut = sliceWholeChars(text, 4);
+
+  assert.equal(cut, "abc");
+  assert.ok(!LONE_HIGH_SURROGATE.test(cut));
+});
+
+test("a cut past the emoji keeps it whole", () => {
+  const cut = sliceWholeChars(`abc${GRIN}def`, 5);
+
+  assert.equal(cut, `abc${GRIN}`);
+  assert.equal([...cut].length, 4);
+});
+
+test("text within the limit is returned untouched", () => {
+  assert.equal(sliceWholeChars(`ab${GRIN}`, 4), `ab${GRIN}`);
+  assert.equal(sliceWholeChars("", 10), "");
+  assert.equal(sliceWholeChars("abc", 0), "");
 });
 
 test("presets keep a stable order across machines", () => {

@@ -101,7 +101,10 @@ function render(): void {
 
 $("add").addEventListener("click", () => {
   presets.push({
-    id: crypto.randomUUID().slice(0, 8),
+    // The whole UUID. It was truncated to eight characters to keep the storage
+    // key short, which is not a constraint that exists: `chrome.storage.sync`
+    // measures key and value together against 8 KB, and this key is 43 bytes.
+    id: crypto.randomUUID(),
     label: "",
     instruction: "",
     englishOnly: false,

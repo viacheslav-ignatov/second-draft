@@ -15,7 +15,11 @@ import {
   type PortRequest,
   type RunRequest,
 } from "../shared/messages.ts";
-import { cleanOutput, presetApplies } from "../shared/rules.ts";
+import {
+  cleanOutput,
+  presetApplies,
+  sliceWholeChars,
+} from "../shared/rules.ts";
 import { isAbortError } from "../shared/errors.ts";
 import { failureKey, failureSubstitutions } from "../shared/failures.ts";
 import { detectLanguage } from "./ai/detect.ts";
@@ -82,7 +86,10 @@ function attach(port: chrome.runtime.Port): void {
         return;
 
       case "detect":
-        void detectLanguage((message.text ?? "").slice(0, DETECT_SAMPLE), post)
+        void detectLanguage(
+          sliceWholeChars(message.text ?? "", DETECT_SAMPLE),
+          post,
+        )
           .then((language) => {
             post({ type: "language", language });
           })

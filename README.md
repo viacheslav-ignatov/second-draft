@@ -216,7 +216,7 @@ dependencies: none.
 
 ### Tests
 
-102 tests, no browser required:
+105 tests, no browser required:
 
 | File                     | Covers                                                             |
 | ------------------------ | ------------------------------------------------------------------ |
