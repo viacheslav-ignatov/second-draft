@@ -109,9 +109,11 @@ instruction, stored in `chrome.storage.sync`, one key per preset.
 
 The on-device model is small. It is good at grammar and tone, mediocre at
 anything needing judgement, and confidently wrong if you ask it about code. The
-hardware bar excludes a lot of laptops. Writer, Rewriter and Proofreader are
-still origin-trial APIs in some builds, so those routes fall through to the
-Prompt API and the output is a little less faithful.
+hardware bar excludes a lot of laptops. Rewriter and Proofreader are not in
+stable Chrome yet — their origin trials closed and they are behind a flag again —
+so those routes fall through to the Prompt API and the output is a little less
+faithful. Nothing needs to change here when they ship: the chain picks up a
+route as soon as its global exists.
 
 **A rich editor gets plain text back.** The extension reads a field as text and
 writes text back, so anywhere you can make words bold, the formatting inside the
