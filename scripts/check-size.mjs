@@ -7,7 +7,7 @@
  * this is a tripwire for an accidental dependency, not a golf score.
  */
 
-import { readdirSync, statSync } from "node:fs";
+import { existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 const BUDGETS_KB = {
@@ -18,11 +18,24 @@ const BUDGETS_KB = {
   "welcome.js": 10,
 };
 
+// This measures the built output, so it has nothing to say before a build. It
+// used to say it with an ENOENT stack trace.
+if (!existsSync("dist")) {
+  console.error("no dist/ — run `npm run build` first");
+  process.exit(1);
+}
+
 let failed = false;
 let total = 0;
 
 for (const [file, budget] of Object.entries(BUDGETS_KB)) {
-  const kb = statSync(join("dist", file)).size / 1024;
+  const path = join("dist", file);
+  if (!existsSync(path)) {
+    console.error(`  ✗ ${file.padEnd(15)} missing from dist/`);
+    failed = true;
+    continue;
+  }
+  const kb = statSync(path).size / 1024;
   total += kb;
   const line = `${file.padEnd(15)} ${kb.toFixed(1).padStart(6)} kB / ${budget} kB`;
   if (kb > budget) {
